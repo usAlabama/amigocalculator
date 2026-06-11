@@ -28,9 +28,6 @@
             -webkit-appearance: none;
             margin: 0;
         }
-        input[type=number], input[type=text] {
-            -moz-appearance: textfield;
-        }
         .pin-card {
             transition: transform 0.15s ease, opacity 0.15s ease;
             touch-action: pan-x;
@@ -43,10 +40,10 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .active-input-box {
             border-color: var(--tg-theme-button-color, #2481cc) !important;
-            box-shadow: 0 0 0 1px var(--tg-theme-button-color, #2481cc);
+            box-shadow: 0 0 0 2px var(--tg-theme-button-color, #2481cc);
         }
         .tab-btn.active {
-            border-bottom: 2px solid var(--tg-theme-button-color, #2481cc);
+            border-bottom: 3px solid var(--tg-theme-button-color, #2481cc);
             color: var(--tg-theme-text-color, #f5f5f5);
         }
         @keyframes marquee {
@@ -55,239 +52,225 @@
         }
         .marquee-content {
             display: flex;
-            animation: marquee 25s linear infinite;
+            animation: marquee 30s linear infinite;
         }
         .marquee-content:hover {
             animation-play-state: paused;
         }
+        .delete-pin-btn {
+            pointer-events: all !important;
+            z-index: 30 !important;
+        }
         .liq-switch-btn {
             transition: all 0.2s ease;
-            cursor: pointer;
         }
         .liq-switch-btn.active {
             background-color: var(--tg-theme-button-color, #2481cc) !important;
             color: white !important;
             border-color: transparent !important;
         }
-        .liq-stat-card {
-            transition: transform 0.1s ease;
-        }
-        .liq-stat-card:active {
-            transform: scale(0.98);
-        }
     </style>
 </head>
 <body class="p-2 h-screen flex flex-col justify-between select-none">
 
     <div class="w-full bg-black/40 h-7 overflow-hidden flex items-center border-b border-gray-800 text-xs rounded-t-lg">
-        <div id="marqueeTicker" class="marquee-content whitespace-nowrap space-x-6 pl-4">
-            <span class="text-gray-400">Loading market tickers...</span>
-        </div>
+        <div id="marqueeTicker" class="marquee-content whitespace-nowrap space-x-6 pl-4 text-sm"></div>
     </div>
 
     <div class="w-full flex-1 flex flex-col justify-start space-y-3 overflow-y-auto no-scrollbar pb-4 pt-1">
         
         <div class="w-full flex flex-col space-y-1">
             <div class="flex justify-between items-center px-1">
-                <span data-i18n="monitor_title" class="text-[11px] font-bold uppercase tracking-wider tg-hint">Монитор & Пины</span>
-                <span id="statusBadge" class="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono">кэш</span>
+                <span class="text-[11px] font-bold uppercase tracking-wider tg-hint">Монитор & Пины</span>
+                <span id="statusBadge" class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono">кэш</span>
             </div>
             
             <div class="flex items-center space-x-2">
-                <button id="toggleSearchBtn" class="tg-primary-btn h-[58px] w-11 rounded-xl flex items-center justify-center shrink-0 font-bold text-xl active:scale-95 transition-transform shadow-md">+</button>
+                <button id="toggleSearchBtn" class="tg-primary-btn h-[58px] w-11 rounded-2xl flex items-center justify-center shrink-0 font-bold text-2xl active:scale-95 transition-transform shadow-md">+</button>
                 <div id="pinsContainer" class="flex items-center space-x-2 overflow-x-auto py-1 no-scrollbar flex-1 min-h-[64px] touch-pan-x pt-2"></div>
             </div>
         </div>
 
-        <div id="searchPanel" class="hidden tg-secondary-bg p-3 rounded-xl border border-gray-700/40 flex flex-col space-y-2">
+        <div id="searchPanel" class="hidden tg-secondary-bg p-3 rounded-2xl border border-gray-700/50 flex flex-col space-y-2">
             <div class="flex items-center space-x-2">
-                <input type="text" id="coinSearchInput" placeholder="BTC, SOL, TON..." 
-                      class="flex-1 bg-zinc-800 border border-gray-700 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500">
-                <button id="executeSearchBtn" data-i18n="search_btn" class="tg-primary-btn text-xs px-3 py-2 rounded-lg font-medium">Найти</button>
+                <input type="text" id="coinSearchInput" placeholder="BTC, SOL, PEPE, TON..." 
+                      class="flex-1 bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500">
+                <button id="executeSearchBtn" class="tg-primary-btn px-6 py-3 rounded-2xl font-semibold">Найти</button>
             </div>
-            <span id="searchStatus" class="text-[11px] tg-hint px-1"></span>
+            <span id="searchStatus" class="text-[11px] px-2 min-h-[20px]"></span>
         </div>
 
         <div class="flex border-b border-gray-800 text-sm font-medium">
-            <button id="tabCalcBtn" data-i18n="tab_converter" class="tab-btn active flex-1 text-center py-2 tg-hint">Конвертер</button>
-            <button id="tabProfitBtn" data-i18n="tab_profit" class="tab-btn flex-1 text-center py-2 tg-hint">Калькулятор Профита</button>
+            <button id="tabCalcBtn" class="tab-btn active flex-1 text-center py-3">Конвертер</button>
+            <button id="tabProfitBtn" class="tab-btn flex-1 text-center py-3">Калькулятор Профита</button>
         </div>
 
+        <!-- ====================== CONVERTER ====================== -->
         <div id="converterTabSection" class="flex flex-col space-y-3">
-            <div id="topInputBox" class="tg-secondary-bg p-3.5 rounded-xl border border-gray-700/30 flex flex-col space-y-1.5 active-input-box cursor-pointer">
-                <div class="flex justify-between items-center text-[11px] tg-hint font-medium uppercase tracking-wider">
-                    <span id="topRoleLabel" data-i18n="giving">Отдаю</span>
-                    <span id="topNameLabel">Bitcoin</span>
+            <div id="topInputBox" class="tg-secondary-bg p-4 rounded-3xl border border-gray-700/30 flex flex-col space-y-2 active-input-box cursor-pointer">
+                <div class="flex justify-between items-center text-xs tg-hint font-medium">
+                    <span id="topRoleLabel">Отдаю</span>
+                    <span id="topNameLabel" class="font-semibold text-white">Bitcoin</span>
                 </div>
-                <div class="flex items-center justify-between">
-                    <input type="text" id="topInput" value="1" readonly class="w-2/3 bg-transparent text-2xl font-bold focus:outline-none border-none p-0 text-white pointer-events-none">
-                    <select id="topSelect" class="bg-zinc-800 text-white border border-gray-600 rounded-lg px-2 py-1 text-xs font-semibold focus:outline-none cursor-pointer"></select>
+                <div class="flex items-center gap-3">
+                    <input type="text" id="topInput" value="1" 
+                           class="flex-1 bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white">
+                    <select id="topSelect" class="bg-zinc-900 border border-gray-600 rounded-2xl px-4 py-2 text-sm font-semibold focus:outline-none cursor-pointer"></select>
                 </div>
             </div>
 
-            <div class="flex justify-center -my-2.5 z-10">
-                <button id="swapBtn" class="tg-primary-btn p-1.5 rounded-full shadow-md active:scale-95 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+            <div class="flex justify-center -my-1 z-10">
+                <button id="swapBtn" class="tg-primary-btn p-3 rounded-2xl shadow-lg active:scale-95 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                     </svg>
                 </button>
             </div>
 
-            <div id="bottomInputBox" class="tg-secondary-bg p-3.5 rounded-xl border border-gray-700/30 flex flex-col space-y-1.5 cursor-pointer">
-                <div class="flex justify-between items-center text-[11px] tg-hint font-medium uppercase tracking-wider">
-                    <span id="bottomRoleLabel" data-i18n="receiving">Получаю</span>
-                    <span id="bottomNameLabel">US Dollars</span>
+            <div id="bottomInputBox" class="tg-secondary-bg p-4 rounded-3xl border border-gray-700/30 flex flex-col space-y-2 cursor-pointer">
+                <div class="flex justify-between items-center text-xs tg-hint font-medium">
+                    <span id="bottomRoleLabel">Получаю</span>
+                    <span id="bottomNameLabel" class="font-semibold text-white">US Dollar</span>
                 </div>
-                <div class="flex items-center justify-between">
-                    <input type="text" id="bottomInput" placeholder="0.00" readonly class="w-2/3 bg-transparent text-2xl font-bold focus:outline-none border-none p-0 text-white pointer-events-none">
-                    <select id="bottomSelect" class="bg-zinc-800 text-white border border-gray-600 rounded-lg px-2 py-1 text-xs font-semibold focus:outline-none cursor-pointer">
-                        <option value="usd" data-symbol="$" selected>USD</option>
-                        <option value="eur" data-symbol="€">EUR</option>
-                        <option value="rub" data-symbol="₽">RUB</option>
-                    </select>
+                <div class="flex items-center gap-3">
+                    <input type="text" id="bottomInput" value="65000" 
+                           class="flex-1 bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white">
+                    <select id="bottomSelect" class="bg-zinc-900 border border-gray-600 rounded-2xl px-4 py-2 text-sm font-semibold focus:outline-none cursor-pointer"></select>
                 </div>
             </div>
 
-            <div class="px-1 text-xs tg-hint">
-                <span data-i18n="cross_rate">Текущий кросс-курс:</span> <span id="rateDisplay" class="font-mono text-white font-medium">...</span>
+            <div class="px-2 text-xs tg-hint flex justify-between items-center">
+                <span>Кросс-курс:</span>
+                <span id="rateDisplay" class="font-mono text-emerald-400 font-medium"></span>
             </div>
 
-            <div class="w-full flex flex-col space-y-1.5 pt-1">
-                <div class="grid grid-cols-4 gap-1.5">
-                    <button class="numpad-btn bg-zinc-800/80 active:bg-zinc-700 text-base font-bold py-2 rounded-xl text-white" data-action="7">7</button>
-                    <button class="numpad-btn bg-zinc-800/80 active:bg-zinc-700 text-base font-bold py-2 rounded-xl text-white" data-action="8">8</button>
-                    <button class="numpad-btn bg-zinc-800/80 active:bg-zinc-700 text-base font-bold py-2 rounded-xl text-white" data-action="9">9</button>
-                    <button class="numpad-btn bg-orange-500/20 active:bg-orange-500/40 text-orange-400 text-sm font-bold py-2 rounded-xl" data-action="clear">C</button>
-                    
-                    <button class="numpad-btn bg-zinc-800/80 active:bg-zinc-700 text-base font-bold py-2 rounded-xl text-white" data-action="4">4</button>
-                    <button class="numpad-btn bg-zinc-800/80 active:bg-zinc-700 text-base font-bold py-2 rounded-xl text-white" data-action="5">5</button>
-                    <button class="numpad-btn bg-zinc-800/80 active:bg-zinc-700 text-base font-bold py-2 rounded-xl text-white" data-action="6">6</button>
-                    <button class="numpad-btn bg-zinc-700/60 active:bg-zinc-600 text-base font-bold py-2 rounded-xl text-blue-400" data-action="/">÷</button>
-                    
-                    <button class="numpad-btn bg-zinc-800/80 active:bg-zinc-700 text-base font-bold py-2 rounded-xl text-white" data-action="1">1</button>
-                    <button class="numpad-btn bg-zinc-800/80 active:bg-zinc-700 text-base font-bold py-2 rounded-xl text-white" data-action="2">2</button>
-                    <button class="numpad-btn bg-zinc-800/80 active:bg-zinc-700 text-base font-bold py-2 rounded-xl text-white" data-action="3">3</button>
-                    <button class="numpad-btn bg-zinc-700/60 active:bg-zinc-600 text-base font-bold py-2 rounded-xl text-blue-400" data-action="*">×</button>
-                    
-                    <button class="numpad-btn bg-zinc-800/80 active:bg-zinc-700 text-base font-bold py-2 rounded-xl text-white" data-action="0">0</button>
-                    <button class="numpad-btn bg-zinc-800/80 active:bg-zinc-700 text-base font-bold py-2 rounded-xl text-white" data-action="dot">.</button>
-                    <button class="numpad-btn bg-zinc-700/60 active:bg-zinc-600 text-base font-bold py-2 rounded-xl text-blue-400" data-action="-">-</button>
-                    <button class="numpad-btn bg-zinc-700/60 active:bg-zinc-600 text-base font-bold py-2 rounded-xl text-blue-400" data-action="+">+</button>
+            <!-- Numpad -->
+            <div class="grid grid-cols-4 gap-2 px-1">
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="7">7</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="8">8</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="9">9</button>
+                <button class="numpad-btn bg-orange-500/10 hover:bg-orange-500/20 active:bg-orange-500/30 text-orange-400 text-xl font-bold py-4 rounded-2xl" data-action="clear">C</button>
+                
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="4">4</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="5">5</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="6">6</button>
+                <button class="numpad-btn bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 text-blue-400 text-xl font-bold py-4 rounded-2xl" data-action="/">÷</button>
+                
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="1">1</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="2">2</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="3">3</button>
+                <button class="numpad-btn bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 text-blue-400 text-xl font-bold py-4 rounded-2xl" data-action="*">×</button>
+                
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="0">0</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="dot">.</button>
+                <button class="numpad-btn bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 text-blue-400 text-xl font-bold py-4 rounded-2xl" data-action="-">-</button>
+                <button class="numpad-btn bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 text-blue-400 text-xl font-bold py-4 rounded-2xl" data-action="+">+</button>
 
-                    <button class="numpad-btn bg-zinc-700/40 active:bg-zinc-600 text-xs font-bold py-1.5 rounded-xl text-white col-span-2" data-action="backspace">⌫</button>
-                    <button class="numpad-btn bg-blue-600 active:bg-blue-500 text-base font-bold py-1.5 rounded-xl text-white col-span-2 shadow-md" data-action="equal">=</button>
-                </div>
+                <button class="numpad-btn bg-zinc-700/70 hover:bg-zinc-600 active:bg-zinc-500 text-xl py-4 rounded-2xl col-span-2" data-action="backspace">⌫</button>
+                <button class="numpad-btn bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-500 text-xl font-bold py-4 rounded-2xl col-span-2 shadow-inner" data-action="equal">=</button>
             </div>
 
-            <div class="tg-secondary-bg p-3 rounded-xl border border-gray-700/30 flex flex-col space-y-2 mt-2">
-                <div class="flex justify-between items-center border-b border-gray-800 pb-1.5">
-                    <span class="text-xs font-bold text-white flex items-center space-x-1">
-                        <span class="w-2 h-2 rounded-full bg-orange-500 inline-block animate-pulse"></span>
-                        <span>Bitcoin Mempool Gas Fees</span>
+            <!-- Mempool -->
+            <div class="tg-secondary-bg p-4 rounded-3xl border border-gray-700/30">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs font-bold flex items-center gap-2">
+                        <span class="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
+                        Bitcoin Mempool
                     </span>
-                    <span class="text-[10px] tg-hint font-mono" id="mempoolUnconfirmed">... TXs</span>
+                    <span id="mempoolUnconfirmed" class="text-[10px] font-mono text-gray-400"></span>
                 </div>
                 <div class="grid grid-cols-4 gap-2 text-center text-[10px]">
-                    <div class="bg-black/20 p-1.5 rounded-lg border border-gray-800">
-                        <div class="text-gray-400 font-medium">No Priority</div>
-                        <div class="text-emerald-400 font-bold font-mono mt-0.5" id="gasNoPriority">0 sat</div>
-                        <div class="text-[9px] tg-hint mt-0.2" id="gasNoPriorityFiat">$0.00</div>
+                    <div class="bg-black/30 p-2 rounded-2xl">
+                        <div class="text-gray-400">Low</div>
+                        <div id="gasLowPriority" class="font-mono font-bold text-yellow-400 mt-1">0</div>
+                        <div id="gasLowPriorityFiat" class="text-[9px] text-gray-500">$0</div>
                     </div>
-                    <div class="bg-black/20 p-1.5 rounded-lg border border-gray-800">
-                        <div class="text-gray-400 font-medium">Low</div>
-                        <div class="text-yellow-400 font-bold font-mono mt-0.5" id="gasLowPriority">0 sat</div>
-                        <div class="text-[9px] tg-hint mt-0.2" id="gasLowPriorityFiat">$0.00</div>
+                    <div class="bg-black/30 p-2 rounded-2xl">
+                        <div class="text-gray-400">Medium</div>
+                        <div id="gasMedPriority" class="font-mono font-bold text-orange-400 mt-1">0</div>
+                        <div id="gasMedPriorityFiat" class="text-[9px] text-gray-500">$0</div>
                     </div>
-                    <div class="bg-black/20 p-1.5 rounded-lg border border-gray-800">
-                        <div class="text-gray-400 font-medium">Medium</div>
-                        <div class="text-orange-400 font-bold font-mono mt-0.5" id="gasMedPriority">0 sat</div>
-                        <div class="text-[9px] tg-hint mt-0.2" id="gasMedPriorityFiat">$0.00</div>
+                    <div class="bg-black/30 p-2 rounded-2xl">
+                        <div class="text-gray-400">High</div>
+                        <div id="gasHighPriority" class="font-mono font-bold text-red-400 mt-1">0</div>
+                        <div id="gasHighPriorityFiat" class="text-[9px] text-gray-500">$0</div>
                     </div>
-                    <div class="bg-black/20 p-1.5 rounded-lg border border-gray-800">
-                        <div class="text-gray-400 font-medium">High</div>
-                        <div class="text-red-400 font-bold font-mono mt-0.5" id="gasHighPriority">0 sat</div>
-                        <div class="text-[9px] tg-hint mt-0.2" id="gasHighPriorityFiat">$0.00</div>
+                    <div class="bg-black/30 p-2 rounded-2xl">
+                        <div class="text-gray-400">Fastest</div>
+                        <div id="gasNoPriority" class="font-mono font-bold text-purple-400 mt-1">0</div>
+                        <div id="gasNoPriorityFiat" class="text-[9px] text-gray-500">$0</div>
                     </div>
-                </div>
-                <div class="flex justify-between items-center text-[10px] pt-1 text-gray-400 font-mono">
-                    <div>Block Time: <span class="text-white" id="mempoolBlockTime">~10.0 min</span></div>
-                    <div>Difficulty Adj: <span class="text-red-400" id="mempoolDiff">...%</span></div>
                 </div>
             </div>
         </div>
 
-        <div id="profitTabSection" class="hidden flex flex-col space-y-3.5 tg-secondary-bg p-4 rounded-xl border border-gray-700/30">
-            <h2 data-i18n="profit_calc_title" class="text-base font-bold text-center text-white">Калькулятор прибыли</h2>
+        <!-- ====================== PROFIT ====================== -->
+        <div id="profitTabSection" class="hidden flex flex-col space-y-4 tg-secondary-bg p-5 rounded-3xl border border-gray-700/30">
+            <h2 class="text-lg font-bold text-center">Калькулятор прибыли</h2>
             
-            <div class="flex flex-col space-y-1">
-                <label data-i18n="p_coin_name" class="text-xs tg-hint text-left pl-1">Выберите монету:</label>
-                <select id="profitCoinSelect" class="bg-zinc-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none cursor-pointer"></select>
+            <div>
+                <label class="text-xs tg-hint block mb-1 pl-1">Монета</label>
+                <select id="profitCoinSelect" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm"></select>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-                <div class="flex flex-col space-y-1">
-                    <label data-i18n="p_current_price" class="text-xs tg-hint text-left pl-1">Текущая цена ($):</label>
-                    <input type="number" id="profitCoinPrice" step="any" class="bg-zinc-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+                <div>
+                    <label class="text-xs tg-hint block mb-1 pl-1">Текущая цена ($)</label>
+                    <input type="number" id="profitCoinPrice" step="any" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm">
                 </div>
-                <div class="flex flex-col space-y-1">
-                    <label data-i18n="p_investment" class="text-xs tg-hint text-left pl-1">Инвестиция ($):</label>
-                    <input type="number" id="profitInvestment" value="100" step="any" class="bg-zinc-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+                <div>
+                    <label class="text-xs tg-hint block mb-1 pl-1">Инвестиция ($)</label>
+                    <input type="number" id="profitInvestment" value="100" step="any" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm">
                 </div>
             </div>
 
-            <div class="flex flex-col space-y-1">
-                <label data-i18n="p_target_price" class="text-xs tg-hint text-left pl-1">Целевая цена продажи ($):</label>
-                <input type="number" id="profitTargetPrice" step="any" class="bg-zinc-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+            <div>
+                <label class="text-xs tg-hint block mb-1 pl-1">Целевая цена ($)</label>
+                <input type="number" id="profitTargetPrice" step="any" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm">
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-                <div class="flex flex-col space-y-1">
-                    <label data-i18n="p_buy_fee" class="text-xs tg-hint text-left pl-1">Комиссия покупки (%):</label>
-                    <input type="number" id="profitBuyingFee" value="0.1" step="0.01" class="bg-zinc-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+                <div>
+                    <label class="text-xs tg-hint block mb-1 pl-1">Комиссия покупки (%)</label>
+                    <input type="number" id="profitBuyingFee" value="0.1" step="0.01" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm">
                 </div>
-                <div class="flex flex-col space-y-1">
-                    <label data-i18n="p_sell_fee" class="text-xs tg-hint text-left pl-1">Комиссия продажи (%):</label>
-                    <input type="number" id="profitSellingFee" value="0.1" step="0.01" class="bg-zinc-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+                <div>
+                    <label class="text-xs tg-hint block mb-1 pl-1">Комиссия продажи (%)</label>
+                    <input type="number" id="profitSellingFee" value="0.1" step="0.01" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm">
                 </div>
             </div>
 
-            <button id="calcProfitActionBtn" data-i18n="p_calc_btn" class="tg-primary-btn w-full py-2.5 rounded-xl font-bold text-sm shadow-md active:scale-95 transition-transform">Рассчитать прибыль</button>
+            <button id="calcProfitActionBtn" class="tg-primary-btn w-full py-4 rounded-3xl font-bold text-base shadow-lg active:scale-[0.97] transition-transform">Рассчитать прибыль</button>
             
-            <div id="profitResult" class="p-3 bg-black/20 rounded-xl min-h-[44px] flex items-center justify-center text-sm font-medium text-white font-mono"></div>
+            <div id="profitResult" class="min-h-[52px] rounded-2xl p-4 text-center font-mono text-sm flex items-center justify-center border border-transparent"></div>
 
-            <div class="w-full bg-black/30 p-3 rounded-xl border border-gray-800 flex flex-col space-y-3 mt-2">
-                <div class="flex justify-between items-center">
-                    <span class="text-xs font-bold text-white uppercase tracking-wider">Карта будущих ликвидаций</span>
-                    <div class="flex gap-1 text-[10px]">
-                        <button data-liq-period="24" class="liq-switch-btn period-switch bg-gray-800/60 px-2 py-0.5 rounded-md text-gray-300">24H</button>
-                        <button data-liq-period="48" class="liq-switch-btn period-switch bg-gray-800/60 px-2 py-0.5 rounded-md text-gray-300">48H</button>
+            <!-- Liquidation Map (mock) -->
+            <div class="bg-black/30 rounded-3xl p-4 border border-gray-800">
+                <div class="flex justify-between mb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest">Ликвидации (24h)</span>
+                    <div class="flex gap-1">
+                        <button data-liq-period="24" class="liq-switch-btn period-switch active px-3 py-1 text-xs rounded-xl">24H</button>
+                        <button data-liq-period="48" class="liq-switch-btn period-switch px-3 py-1 text-xs rounded-xl">48H</button>
                     </div>
                 </div>
-                <div class="flex gap-3 justify-center">
-                    <button data-liq-asset="btc" class="liq-switch-btn asset-switch text-sm font-bold px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/40">BTC</button>
-                    <button data-liq-asset="eth" class="liq-switch-btn asset-switch text-sm font-bold px-3 py-1 rounded-full bg-gray-700/40 text-gray-300">ETH</button>
+                <div class="flex gap-2 mb-4">
+                    <button data-liq-asset="btc" class="liq-switch-btn asset-switch active flex-1 py-2 rounded-2xl text-sm font-bold">BTC</button>
+                    <button data-liq-asset="eth" class="liq-switch-btn asset-switch flex-1 py-2 rounded-2xl text-sm font-bold">ETH</button>
                 </div>
-                <div class="grid grid-cols-2 gap-3 mt-1">
-                    <div class="liq-stat-card bg-emerald-500/10 p-2 rounded-xl border border-emerald-500/30 text-center">
-                        <div class="text-[10px] text-emerald-300 font-semibold uppercase tracking-wide">Long ликвидации</div>
-                        <div class="text-xl font-bold text-emerald-400 font-mono" id="liqLongValue">$0</div>
-                        <div class="text-[9px] text-gray-400 mt-0.5" id="liqLongPercent">0%</div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-3 text-center">
+                        <div class="text-emerald-400 text-xs font-bold">LONG</div>
+                        <div id="liqLongValue" class="text-2xl font-bold text-emerald-400 font-mono">$428M</div>
+                        <div id="liqLongPercent" class="text-emerald-500/70 text-xs">58.2%</div>
                     </div>
-                    <div class="liq-stat-card bg-red-500/10 p-2 rounded-xl border border-red-500/30 text-center">
-                        <div class="text-[10px] text-red-300 font-semibold uppercase tracking-wide">Short ликвидации</div>
-                        <div class="text-xl font-bold text-red-400 font-mono" id="liqShortValue">$0</div>
-                        <div class="text-[9px] text-gray-400 mt-0.5" id="liqShortPercent">0%</div>
+                    <div class="bg-red-500/10 border border-red-500/30 rounded-2xl p-3 text-center">
+                        <div class="text-red-400 text-xs font-bold">SHORT</div>
+                        <div id="liqShortValue" class="text-2xl font-bold text-red-400 font-mono">$312M</div>
+                        <div id="liqShortPercent" class="text-red-500/70 text-xs">41.8%</div>
                     </div>
-                </div>
-                <div class="text-[9px] text-center text-gray-500 font-mono pt-1">
-                   Накопленный объем | <span id="liqPeriodLabel">24h</span> · <span id="liqAssetLabel">BTC</span>
-                </div>
-                <div class="w-full h-1.5 bg-gray-800 rounded-full overflow-hidden">
-                    <div id="liqRatioBar" class="h-full bg-gradient-to-r from-emerald-500 to-red-500" style="width: 50%"></div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <script>
@@ -295,41 +278,16 @@
         tg.ready();
         tg.expand();
 
+        // ==================== i18n ====================
         const i18n = {
-            ru: {
-                monitor_title: "Монитор & Пины", search_btn: "Найти", tab_converter: "Конвертер", tab_profit: "Калькулятор Профита",
-                giving: "Отдаю", receiving: "Получаю", cross_rate: "Текущий кросс-курс:", profit_calc_title: "Калькулятор прибыли",
-                p_coin_name: "Выберите монету:", p_current_price: "Текущая цена ($):", p_investment: "Инвестиция ($):",
-                p_target_price: "Целевая цена продажи ($):", p_buy_fee: "Комиссия покупки (%):", p_sell_fee: "Комиссия продажи (%):",
-                p_calc_btn: "Рассчитать прибыль", err_fee: "Введите корректные данные", 
-                res_txt: (name, target, profit) => `При продаже ${name} по $${target}, чистая прибыль: $${profit}`
-            },
-            uk: {
-                monitor_title: "Монітор & Піни", search_btn: "Знайти", tab_converter: "Конвертер", tab_profit: "Калькулятор Профіту",
-                giving: "Віддаю", receiving: "Отримую", cross_rate: "Поточний кросс-курс:", profit_calc_title: "Калькулятор прибутку",
-                p_coin_name: "Оберіть монету:", p_current_price: "Поточна ціна ($):", p_investment: "Інвестиція ($):",
-                p_target_price: "Цільова ціна продажу ($):", p_buy_fee: "Комісія купівлі (%):", p_sell_fee: "Комісія продажу (%):",
-                p_calc_btn: "Розрахувати прибуток", err_fee: "Введіть коректні дані",
-                res_txt: (name, target, profit) => `При продажу ${name} за $${target}, чистий прибуток: $${profit}`
-            },
-            en: {
-                monitor_title: "Monitor & Pins", search_btn: "Search", tab_converter: "Converter", tab_profit: "Profit Calc",
-                giving: "Giving", receiving: "Receiving", cross_rate: "Current Cross Rate:", profit_calc_title: "Profit Calculator",
-                p_coin_name: "Select Coin:", p_current_price: "Current Price ($):", p_investment: "Investment ($):",
-                p_target_price: "Target Sell Price ($):", p_buy_fee: "Buying Fee (%):", p_sell_fee: "Selling Fee (%):",
-                p_calc_btn: "Calculate Profit", err_fee: "Please enter valid numbers",
-                res_txt: (name, target, profit) => `Selling ${name} at $${target} yields a profit of: $${profit}`
-            }
+            ru: { giving: "Отдаю", receiving: "Получаю", cross_rate: "Кросс-курс:" },
+            uk: { giving: "Віддаю", receiving: "Отримаю", cross_rate: "Крос-курс:" },
+            en: { giving: "Giving", receiving: "Receiving", cross_rate: "Rate:" }
         };
+        const userLang = (tg.initDataUnsafe?.user?.language_code || 'en').substring(0, 2);
+        const currentLang = i18n[userLang] ? userLang : 'ru';
 
-        const userLang = tg.initDataUnsafe?.user?.language_code || navigator.language || 'en';
-        const currentLang = i18n[userLang.substring(0, 2)] ? userLang.substring(0, 2) : 'en';
-
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (i18n[currentLang][key]) el.innerText = i18n[currentLang][key];
-        });
-
+        // ==================== DOM ====================
         const topInput = document.getElementById('topInput');
         const bottomInput = document.getElementById('bottomInput');
         const topSelect = document.getElementById('topSelect');
@@ -355,10 +313,8 @@
         const tabProfitBtn = document.getElementById('tabProfitBtn');
         const converterTabSection = document.getElementById('converterTabSection');
         const profitTabSection = document.getElementById('profitTabSection');
-        
-        // Исправлено: теперь это выпадающий список
+
         const profitCoinSelect = document.getElementById('profitCoinSelect');
-        
         const profitCoinPrice = document.getElementById('profitCoinPrice');
         const profitInvestment = document.getElementById('profitInvestment');
         const profitTargetPrice = document.getElementById('profitTargetPrice');
@@ -367,91 +323,119 @@
         const calcProfitActionBtn = document.getElementById('calcProfitActionBtn');
         const profitResult = document.getElementById('profitResult');
 
+        // ==================== STATE ====================
         let ratesData = {};
-        let currentActiveInput = topInput;
         let isInverse = false;
-        let userHasEditedTarget = false;
-         
+        let currentActiveInput = topInput;
         let pinnedCoins = ['bitcoin', 'ethereum', 'toncoin', 'solana'];
-        let coinsMeta = {
+        
+        const coinsMeta = {
             bitcoin: { symbol: 'BTC', name: 'Bitcoin', sparkline: [], change24h: 0 },
             ethereum: { symbol: 'ETH', name: 'Ethereum', sparkline: [], change24h: 0 },
             toncoin: { symbol: 'TON', name: 'Toncoin', sparkline: [], change24h: 0 },
             solana: { symbol: 'SOL', name: 'Solana', sparkline: [], change24h: 0 }
         };
 
-        const CACHE_KEY = 'twa_terminal_rates_v6';
-        const META_CACHE_KEY = 'twa_terminal_meta_v6';
-        const CACHE_TTL = 60000;
+        const fiatMeta = {
+            usd: { symbol: 'USD', name: 'US Dollar', isFiat: true },
+            eur: { symbol: 'EUR', name: 'Euro', isFiat: true },
+            rub: { symbol: 'RUB', name: 'Russian Ruble', isFiat: true }
+        };
 
+        const CACHE_KEY = 'twa_terminal_rates_v7';
+        const META_CACHE_KEY = 'twa_terminal_meta_v7';
+        const CACHE_TTL = 45000;
+
+        // Load from cache
         if (localStorage.getItem(META_CACHE_KEY)) {
             try {
-                const stored = JSON.parse(localStorage.getItem(META_CACHE_KEY));
-                pinnedCoins = stored.pinnedCoins || pinnedCoins;
-                coinsMeta = stored.coinsMeta || coinsMeta;
+                const saved = JSON.parse(localStorage.getItem(META_CACHE_KEY));
+                if (saved.pinnedCoins) pinnedCoins = saved.pinnedCoins;
+                Object.assign(coinsMeta, saved.coinsMeta || {});
             } catch(e) {}
         }
-        syncSelectOptions();
 
-        profitTargetPrice.addEventListener('input', () => { userHasEditedTarget = true; });
-
-        function syncSelectOptions() {
-            const currentTopVal = topSelect.value;
-            const currentProfitVal = profitCoinSelect.value;
-            
-            topSelect.innerHTML = '';
-            profitCoinSelect.innerHTML = '';
-            
-            pinnedCoins.forEach(id => {
-                const sym = coinsMeta[id]?.symbol || id.toUpperCase();
-                
-                // Для главного конвертера
-                const optionTop = document.createElement('option');
-                optionTop.value = id;
-                optionTop.setAttribute('data-symbol', sym);
-                optionTop.innerText = sym;
-                topSelect.appendChild(optionTop);
-                
-                // Для калькулятора профита
-                const optionProfit = document.createElement('option');
-                optionProfit.value = id;
-                optionProfit.innerText = coinsMeta[id]?.name || sym;
-                profitCoinSelect.appendChild(optionProfit);
-            });
-            
-            topSelect.value = pinnedCoins.includes(currentTopVal) ? currentTopVal : pinnedCoins[0];
-            profitCoinSelect.value = pinnedCoins.includes(currentProfitVal) ? currentProfitVal : pinnedCoins[0];
+        // ==================== HELPERS ====================
+        function getAssetMeta(id) {
+            if (coinsMeta[id]) return coinsMeta[id];
+            if (fiatMeta[id]) return fiatMeta[id];
+            return { symbol: id.toUpperCase(), name: id };
         }
 
-        function generateSparklineSVG(prices) {
-            if (!prices || prices.length < 2) return `<svg width="55" height="18"><line x1="0" y1="9" x2="55" y2="9" stroke="#708499" stroke-width="1.5" stroke-dasharray="2,2"/></svg>`;
+        function isFiat(id) {
+            return !!fiatMeta[id];
+        }
+
+        function syncSelectOptions() {
+            const currentTop = topSelect.value;
+            const currentBottom = bottomSelect.value;
+
+            topSelect.innerHTML = '';
+            bottomSelect.innerHTML = '';
+            profitCoinSelect.innerHTML = '';
+
+            // Crypto options
+            pinnedCoins.forEach(id => {
+                const meta = coinsMeta[id] || { symbol: id.toUpperCase() };
+                
+                const opt1 = new Option(meta.symbol, id);
+                const opt2 = new Option(meta.symbol, id);
+                topSelect.appendChild(opt1);
+                bottomSelect.appendChild(opt2);
+
+                const optProfit = new Option(meta.name || meta.symbol, id);
+                profitCoinSelect.appendChild(optProfit);
+            });
+
+            // Fiat options for converter
+            Object.keys(fiatMeta).forEach(id => {
+                const meta = fiatMeta[id];
+                const opt1 = new Option(meta.symbol, id);
+                const opt2 = new Option(meta.symbol, id);
+                topSelect.appendChild(opt1);
+                bottomSelect.appendChild(opt2);
+            });
+
+            topSelect.value = pinnedCoins.includes(currentTop) || Object.keys(fiatMeta).includes(currentTop) ? currentTop : 'bitcoin';
+            bottomSelect.value = Object.keys(fiatMeta).includes(currentBottom) ? currentBottom : 'usd';
+            profitCoinSelect.value = pinnedCoins.includes(currentTop) ? currentTop : pinnedCoins[0];
+        }
+
+        function generateSparklineSVG(prices = []) {
+            if (prices.length < 2) {
+                return `<svg width="52" height="20"><line x1="0" y1="10" x2="52" y2="10" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2 2"/></svg>`;
+            }
             const min = Math.min(...prices);
             const max = Math.max(...prices);
-            const range = max - min === 0 ? 1 : max - min;
-            const width = 55, height = 18;
-            const points = prices.map((p, idx) => {
-                const x = (idx / (prices.length - 1)) * width;
-                const y = height - ((p - min) / range) * height;
+            const range = max - min || 1;
+            const points = prices.map((price, i) => {
+                const x = (i / (prices.length - 1)) * 52;
+                const y = 20 - ((price - min) / range) * 18;
                 return `${x.toFixed(1)},${y.toFixed(1)}`;
             }).join(' ');
-            const strokeColor = prices[prices.length - 1] >= prices[0] ? '#10b981' : '#ef4444';
-            return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><polyline fill="none" stroke="${strokeColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="${points}"/></svg>`;
+            const color = prices[prices.length-1] >= prices[0] ? '#10b981' : '#ef4444';
+            return `<svg width="52" height="20" viewBox="0 0 52 20"><polyline fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" points="${points}"/></svg>`;
         }
 
         function updateMarquee() {
             marqueeTicker.innerHTML = '';
             pinnedCoins.forEach(id => {
                 const meta = coinsMeta[id];
-                if (!meta || !ratesData[id] || !ratesData[id]['usd']) return;
-                const price = ratesData[id]['usd'].toLocaleString('en-US', {maximumFractionDigits: 2});
+                const rate = ratesData[id]?.usd;
+                if (!meta || !rate) return;
+                
                 const change = meta.change24h || 0;
-                const isPositive = change >= 0;
-                const colorClass = isPositive ? 'text-emerald-400' : 'text-red-400';
-                const sign = isPositive ? '+' : '';
-                const item = document.createElement('span');
-                item.className = 'inline-flex items-center space-x-1 font-mono font-bold';
-                item.innerHTML = `<span class="text-white">${meta.symbol}:</span> <span class="${colorClass}">$${price} (${sign}${change.toFixed(2)}%)</span>`;
-                marqueeTicker.appendChild(item);
+                const color = change >= 0 ? 'text-emerald-400' : 'text-red-400';
+                const sign = change >= 0 ? '+' : '';
+                
+                const el = document.createElement('span');
+                el.className = 'inline-flex items-center gap-1.5 font-mono whitespace-nowrap mr-8';
+                el.innerHTML = `
+                    <span class="text-white/90">${meta.symbol}</span>
+                    <span class="text-white">$${rate.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</span>
+                    <span class="${color} text-xs">(${sign}${change.toFixed(1)}%)</span>
+                `;
+                marqueeTicker.appendChild(el);
             });
         }
 
@@ -460,83 +444,69 @@
             pinnedCoins.forEach(id => {
                 const meta = coinsMeta[id];
                 if (!meta) return;
-                let priceText = '...';
-                let priceColorClass = 'text-gray-300';
-                if (ratesData[id] && ratesData[id]['usd']) {
-                    priceText = `$${ratesData[id]['usd'].toLocaleString('en-US', {maximumFractionDigits: meta.symbol === 'SHIB' ? 6 : 2})}`;
-                    priceColorClass = (meta.change24h >= 0) ? 'text-emerald-400 font-semibold' : 'text-red-400 font-semibold';
-                }
+
+                const price = ratesData[id]?.usd || 0;
+                const change = meta.change24h || 0;
+                const colorClass = change >= 0 ? 'text-emerald-400' : 'text-red-400';
+
                 const card = document.createElement('div');
-                card.className = 'pin-card flex items-center space-x-2 bg-zinc-800/80 border border-gray-700/40 px-2.5 py-1.5 rounded-xl shrink-0 cursor-grab active:cursor-grabbing relative mt-1';
-                card.setAttribute('draggable', 'true');
-                card.setAttribute('data-id', id);
+                card.className = `pin-card flex items-center gap-2 bg-zinc-900 border border-gray-700/50 px-3 py-2.5 rounded-2xl shrink-0 cursor-grab active:cursor-grabbing relative`;
+                card.draggable = true;
+                card.dataset.id = id;
                 card.innerHTML = `
-                    <div class="flex flex-col select-none pointer-events-none">
-                        <span class="text-xs font-bold text-white">${meta.symbol}</span>
-                        <span class="text-[10px] font-mono ${priceColorClass}">${priceText}</span>
+                    <div>
+                        <div class="text-xs font-bold">${meta.symbol}</div>
+                        <div class="text-[10px] font-mono ${colorClass}">${price ? '$' + price.toLocaleString('en-US', {maximumFractionDigits: 4}) : '—'}</div>
                     </div>
-                    <div class="bg-black/20 rounded px-1 py-0.5 flex items-center justify-center pointer-events-none h-6">${generateSparklineSVG(meta.sparkline)}</div>
-                    
-                    <button class="delete-pin-btn absolute -top-2 -right-2 w-[22px] h-[22px] bg-red-500/90 text-white rounded-full text-[12px] flex items-center justify-center hover:bg-red-400 transition-colors z-20 shadow-lg border border-gray-900" data-id="${id}" draggable="false">✕</button>
+                    <div class="bg-black/40 rounded-lg p-1">${generateSparklineSVG(meta.sparkline)}</div>
+                    <button class="delete-pin-btn absolute -top-1 -right-1 w-5 h-5 bg-red-500 hover:bg-red-600 text-white text-[13px] flex items-center justify-center rounded-full shadow-md border border-zinc-900" data-id="${id}">✕</button>
                 `;
                 pinsContainer.appendChild(card);
             });
             initDragAndDrop();
+            attachDeleteListeners();
         }
 
-        pinsContainer.addEventListener('click', (e) => {
-            const delBtn = e.target.closest('.delete-pin-btn');
-            if (delBtn) {
-                e.stopPropagation();
-                e.preventDefault();
-                const id = delBtn.getAttribute('data-id');
-                if (pinnedCoins.length <= 1) return;
-                try { tg.HapticFeedback.notificationOccurred('warning'); } catch(err) {}
-                pinnedCoins = pinnedCoins.filter(c => c !== id);
-                savePinsState();
-                renderPins();
-                updateMarquee();
-                updateCalculator('top');
-                return;
-            }
-            
-            const card = e.target.closest('.pin-card');
-            if (card) {
-                const id = card.getAttribute('data-id');
-                try { tg.HapticFeedback.impactOccurred('light'); } catch(err) {}
-                userHasEditedTarget = false;
-                if (isInverse) bottomSelect.value = id; else topSelect.value = id;
-                syncProfitFieldsWithSelected(id);
-                updateCalculator('top');
-            }
-        });
-
-        function syncProfitFieldsWithSelected(coinId) {
-            if(coinsMeta[coinId]) {
-                profitCoinSelect.value = coinId;
-                if(ratesData[coinId] && ratesData[coinId]['usd']) {
-                    profitCoinPrice.value = ratesData[coinId]['usd'];
-                    if (!userHasEditedTarget) profitTargetPrice.value = (ratesData[coinId]['usd'] * 1.2).toFixed(2);
-                }
-            }
+        function attachDeleteListeners() {
+            document.querySelectorAll('.delete-pin-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.stopImmediatePropagation();
+                    const id = btn.dataset.id;
+                    if (pinnedCoins.length <= 2) return;
+                    
+                    pinnedCoins = pinnedCoins.filter(x => x !== id);
+                    delete coinsMeta[id];
+                    localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
+                    renderPins();
+                    updateMarquee();
+                    syncSelectOptions();
+                    updateCalculator();
+                    tg.HapticFeedback.notificationOccurred('warning');
+                };
+            });
         }
-        
-        profitCoinSelect.addEventListener('change', (e) => {
-            userHasEditedTarget = false;
-            syncProfitFieldsWithSelected(e.target.value);
-        });
 
         function initDragAndDrop() {
-            const cards = document.querySelectorAll('.pin-card');
-            let draggedElement = null;
-            cards.forEach(card => {
-                card.addEventListener('dragstart', (e) => { draggedElement = card; card.classList.add('dragging'); });
-                card.addEventListener('dragend', () => { card.classList.remove('dragging'); savePinsState(); });
+            let dragged = null;
+            document.querySelectorAll('.pin-card').forEach(card => {
+                card.addEventListener('dragstart', () => {
+                    dragged = card;
+                    setTimeout(() => card.style.opacity = '0.4', 0);
+                });
+                card.addEventListener('dragend', () => {
+                    card.style.opacity = '1';
+                    const newOrder = Array.from(pinsContainer.children).map(el => el.dataset.id);
+                    pinnedCoins = newOrder;
+                    localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
+                    syncSelectOptions();
+                });
             });
-            pinsContainer.addEventListener('dragover', (e) => {
+
+            pinsContainer.addEventListener('dragover', e => {
                 e.preventDefault();
                 const afterElement = getDragAfterElement(pinsContainer, e.clientX);
-                if (!afterElement) pinsContainer.appendChild(draggedElement); else pinsContainer.insertBefore(draggedElement, afterElement);
+                if (afterElement == null) pinsContainer.appendChild(dragged);
+                else pinsContainer.insertBefore(dragged, afterElement);
             });
         }
 
@@ -545,410 +515,385 @@
             return draggableElements.reduce((closest, child) => {
                 const box = child.getBoundingClientRect();
                 const offset = x - box.left - box.width / 2;
-                if (offset < 0 && offset > closest.offset) return { offset: offset, element: child }; else return closest;
+                if (offset < 0 && offset > closest.offset) return { offset: offset, element: child };
+                return closest;
             }, { offset: Number.NEGATIVE_INFINITY }).element;
         }
 
-        function savePinsState() {
-            const currentCards = [...pinsContainer.querySelectorAll('.pin-card')];
-            pinnedCoins = currentCards.map(card => card.getAttribute('data-id'));
-            localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
-            syncSelectOptions();
-        }
-
-        toggleSearchBtn.addEventListener('click', () => {
-            searchPanel.classList.toggle('hidden');
-            if(!searchPanel.classList.contains('hidden')) {
-                setTimeout(() => coinSearchInput.focus(), 50);
-            }
-        });
-
-        // Исправленный умный фетчер для API без лишних прокси-ошибок
-        async function fetchCG(url) {
+        async function fetchWithFallback(url) {
             try {
                 const res = await fetch(url);
                 if (res.ok) return await res.json();
-            } catch(e) {}
-            
-            // Надежный фоллбэк
+            } catch {}
             try {
                 const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
                 if (res.ok) return await res.json();
-            } catch(e) {}
-            
-            throw new Error('API Request Failed');
+            } catch {}
+            return null;
         }
 
+        async function fetchRates() {
+            const cached = localStorage.getItem(CACHE_KEY);
+            const cachedTime = localStorage.getItem(CACHE_KEY + '_ts');
+
+            if (cached && cachedTime && (Date.now() - parseInt(cachedTime) < CACHE_TTL)) {
+                ratesData = JSON.parse(cached);
+                statusBadge.textContent = 'кэш';
+                renderPins();
+                updateMarquee();
+                updateCalculator();
+                return;
+            }
+
+            try {
+                const ids = pinnedCoins.join(',');
+                const data = await fetchWithFallback(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd,eur,rub&include_24hr_change=true`);
+
+                if (data) {
+                    ratesData = {};
+                    pinnedCoins.forEach(id => {
+                        if (data[id]) {
+                            ratesData[id] = {
+                                usd: data[id].usd,
+                                eur: data[id].eur,
+                                rub: data[id].rub
+                            };
+                            if (data[id].usd_24h_change !== undefined) {
+                                coinsMeta[id].change24h = data[id].usd_24h_change;
+                            }
+                        }
+                    });
+
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(ratesData));
+                    localStorage.setItem(CACHE_KEY + '_ts', Date.now());
+                    localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
+                    statusBadge.textContent = 'live';
+                }
+            } catch (e) {
+                console.error(e);
+                if (cached) {
+                    ratesData = JSON.parse(cached);
+                    statusBadge.textContent = 'offline';
+                }
+            }
+
+            renderPins();
+            updateMarquee();
+            updateCalculator();
+        }
+
+        function updateCalculator() {
+            let fromId = topSelect.value;
+            let toId = bottomSelect.value;
+
+            if (isInverse) {
+                [fromId, toId] = [toId, fromId];
+            }
+
+            const fromMeta = getAssetMeta(fromId);
+            const toMeta = getAssetMeta(toId);
+
+            topNameLabel.textContent = fromMeta.name || fromMeta.symbol;
+            bottomNameLabel.textContent = toMeta.name || toMeta.symbol;
+
+            const fromIsFiat = isFiat(fromId);
+            const rateKey = fromIsFiat ? toId : fromId;
+            const rate = ratesData[rateKey]?.usd || 0;
+
+            if (!rate) {
+                rateDisplay.textContent = '—';
+                return;
+            }
+
+            let displayRate = 1;
+            if (!fromIsFiat && !isFiat(toId)) {
+                displayRate = rate;
+                rateDisplay.textContent = `1 ${fromMeta.symbol} = $${rate.toLocaleString('en-US')}`;
+            } else if (fromIsFiat) {
+                displayRate = 1 / rate;
+                rateDisplay.textContent = `1 ${toMeta.symbol} = $${(1/rate).toFixed(6)}`;
+            } else {
+                displayRate = rate;
+                rateDisplay.textContent = `1 ${fromMeta.symbol} = $${rate.toLocaleString('en-US')}`;
+            }
+
+            const topVal = parseFloat(topInput.value) || 0;
+            const bottomVal = parseFloat(bottomInput.value) || 0;
+
+            if (currentActiveInput === topInput) {
+                if (isInverse) {
+                    bottomInput.value = (topVal / displayRate).toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
+                } else {
+                    bottomInput.value = (topVal * displayRate).toFixed(2);
+                }
+            } else {
+                if (isInverse) {
+                    topInput.value = (bottomVal * displayRate).toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
+                } else {
+                    topInput.value = (bottomVal / displayRate).toFixed(6).replace(/0+$/, '').replace(/\.$/, '');
+                }
+            }
+        }
+
+        // ==================== SEARCH ====================
         executeSearchBtn.addEventListener('click', async () => {
             const query = coinSearchInput.value.trim().toLowerCase();
-            if(!query) return;
-            searchStatus.innerText = "Поиск...";
-            searchStatus.className = "text-[11px] text-blue-400 px-1";
-            
+            if (!query) return;
+
+            searchStatus.textContent = 'Поиск...';
+            searchStatus.className = 'text-blue-400 text-[11px] px-2';
+
             try {
-                const data = await fetchCG(`https://api.coingecko.com/api/v3/search?query=${query}`);
-                
-                if(!data.coins || data.coins.length === 0) { 
-                    searchStatus.innerText = "Не найдено"; 
-                    searchStatus.className = "text-[11px] text-red-400 px-1";
-                    return; 
-                }
-                
-                const targetCoin = data.coins[0];
-                const coinId = targetCoin.id;
-                
-                if (pinnedCoins.includes(coinId)) { 
-                    searchStatus.innerText = "Уже добавлено"; 
-                    searchStatus.className = "text-[11px] text-yellow-400 px-1";
-                    return; 
+                const searchData = await fetchWithFallback(`https://api.coingecko.com/api/v3/search?query=${query}`);
+                if (!searchData?.coins?.length) throw new Error('Not found');
+
+                let coin = searchData.coins[0];
+                let coinId = coin.id;
+
+                // Нормализация известных id
+                if (coinId === 'the-open-network') coinId = 'toncoin';
+                if (pinnedCoins.includes(coinId)) {
+                    searchStatus.textContent = 'Уже в пинах';
+                    searchStatus.className = 'text-yellow-400 text-[11px] px-2';
+                    return;
                 }
 
-                searchStatus.innerText = "Загрузка данных...";
-                
-                let sparklineData = [];
+                // Получаем sparkline
+                let sparkline = [];
                 try {
-                    const histData = await fetchCG(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7&interval=daily`);
-                    if (histData && histData.prices) {
-                        sparklineData = histData.prices.map(p => p[1]);
-                    }
-                } catch (err) {
-                    console.warn('Sparkline fetch failed:', err);
-                }
+                    const chart = await fetchWithFallback(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7&interval=daily`);
+                    if (chart?.prices) sparkline = chart.prices.map(p => p[1]);
+                } catch {}
 
-                coinsMeta[coinId] = { 
-                    symbol: targetCoin.symbol.toUpperCase(), 
-                    name: targetCoin.name, 
-                    sparkline: sparklineData, 
-                    change24h: 0 
+                coinsMeta[coinId] = {
+                    symbol: coin.symbol.toUpperCase(),
+                    name: coin.name,
+                    sparkline: sparkline,
+                    change24h: 0
                 };
-                pinnedCoins.push(coinId);
-                savePinsState();
+
+                pinnedCoins.unshift(coinId); // добавляем в начало
+                localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
                 localStorage.removeItem(CACHE_KEY);
+
                 await fetchRates();
                 
                 coinSearchInput.value = '';
                 searchPanel.classList.add('hidden');
-                searchStatus.innerText = '';
-                searchStatus.className = "text-[11px] tg-hint px-1";
-                try { tg.HapticFeedback.notificationOccurred('success'); } catch(err) {}
-            } catch (err) { 
-                console.error('Search error:', err);
-                searchStatus.innerText = "Ошибка сети. Попробуйте позже."; 
-                searchStatus.className = "text-[11px] text-red-400 px-1";
+                searchStatus.textContent = 'Добавлено ✓';
+                searchStatus.className = 'text-emerald-400 text-[11px] px-2';
+                
+                tg.HapticFeedback.notificationOccurred('success');
+            } catch (err) {
+                console.error(err);
+                searchStatus.textContent = 'Монета не найдена';
+                searchStatus.className = 'text-red-400 text-[11px] px-2';
             }
         });
 
-        async function fetchRates() {
-            const cached = localStorage.getItem(CACHE_KEY);
-            const cachedTime = localStorage.getItem(CACHE_KEY + '_time');
-            
-            if (cached && cachedTime && (Date.now() - cachedTime < CACHE_TTL)) {
-                ratesData = JSON.parse(cached);
-                statusBadge.innerText = "кэш";
-                renderPins(); 
-                updateMarquee(); 
-                syncProfitFieldsWithSelected(topSelect.value); 
-                updateCalculator('top');
-                return;
-            }
-            
-            try {
-                const coinsStr = pinnedCoins.join(',');
-                const fullData = await fetchCG(`https://api.coingecko.com/api/v3/simple/price?ids=${coinsStr}&vs_currencies=usd,eur,rub&include_24hr_change=true`);
-                
-                ratesData = {};
-                pinnedCoins.forEach(id => {
-                    if (fullData[id]) {
-                        ratesData[id] = { 
-                            usd: fullData[id].usd, 
-                            eur: fullData[id].eur, 
-                            rub: fullData[id].rub 
-                        };
-                        if(fullData[id].usd_24h_change !== undefined) {
-                            coinsMeta[id].change24h = fullData[id].usd_24h_change;
-                        }
-                    }
-                });
-                
-                for (let id of pinnedCoins) {
-                    if (!coinsMeta[id].sparkline || coinsMeta[id].sparkline.length === 0) {
-                        try {
-                            const hData = await fetchCG(`https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7&interval=daily`);
-                            if (hData && hData.prices) {
-                                coinsMeta[id].sparkline = hData.prices.map(p => p[1]);
-                            }
-                        } catch (err) {}
-                    }
-                }
-                
-                localStorage.setItem(CACHE_KEY, JSON.stringify(ratesData));
-                localStorage.setItem(CACHE_KEY + '_time', Date.now());
-                localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
-                statusBadge.innerText = "live";
-                renderPins(); 
-                updateMarquee(); 
-                syncProfitFieldsWithSelected(topSelect.value); 
-                updateCalculator('top');
-            } catch (e) {
-                console.error('Fetch rates error:', e);
-                if (cached) { 
-                    ratesData = JSON.parse(cached); 
-                    statusBadge.innerText = "кэш (offline)";
-                    renderPins(); 
-                    updateMarquee(); 
-                    syncProfitFieldsWithSelected(topSelect.value);
-                    updateCalculator('top'); 
-                }
-            }
-        }
-
-        function safeEval(str) {
-            try {
-                const sanitized = str.replace(/[^0-9+\-*/.]/g, '');
-                if (!sanitized) return 0;
-                const fn = new Function(`return ${sanitized}`);
-                const res = fn();
-                return isFinite(res) ? res : 0;
-            } catch { return null; }
-        }
-
-        function updateCalculator(source = 'top') {
-            const topSelected = topSelect.value;
-            const bottomSelected = bottomSelect.value;
-            const cryptoId = isInverse ? bottomSelected : topSelected;
-            const fiatId = isInverse ? topSelected : bottomSelected;
-            
-            if (!ratesData[cryptoId] || !ratesData[cryptoId][fiatId]) return;
-            
-            const rate = ratesData[cryptoId][fiatId];
-            const cryptoSymbol = coinsMeta[cryptoId]?.symbol || 'CRYPTO';
-            const fiatSymbol = bottomSelect.options[bottomSelect.selectedIndex].getAttribute('data-symbol');
-            
-            topNameLabel.innerText = isInverse ? 'US Dollars' : (coinsMeta[topSelected]?.name || '');
-            bottomNameLabel.innerText = isInverse ? (coinsMeta[bottomSelected]?.name || '') : 'US Dollars';
-            rateDisplay.innerText = `1 ${cryptoSymbol} = ${rate.toLocaleString(currentLang === 'ru' ? 'ru-RU' : 'en-US')} ${fiatSymbol}`;
-            
-            if (source === 'top') {
-                const parsedVal = safeEval(topInput.value);
-                if (parsedVal === null) return;
-                bottomInput.value = !isInverse ? (parsedVal * rate).toFixed(2) : (parsedVal / rate).toFixed(6).replace(/\.?0+$/, "");
-            } else {
-                const parsedVal = safeEval(bottomInput.value);
-                if (parsedVal === null) return;
-                topInput.value = !isInverse ? (parsedVal / rate).toFixed(6).replace(/\.?0+$/, "") : (parsedVal * rate).toFixed(2);
-            }
-        }
-
-        topInputBox.addEventListener('click', () => { 
-            currentActiveInput = topInput; 
-            topInputBox.classList.add('active-input-box'); 
-            bottomInputBox.classList.remove('active-input-box'); 
+        // ==================== EVENT LISTENERS ====================
+        toggleSearchBtn.addEventListener('click', () => {
+            searchPanel.classList.toggle('hidden');
+            if (!searchPanel.classList.contains('hidden')) setTimeout(() => coinSearchInput.focus(), 100);
         });
-        
-        bottomInputBox.addEventListener('click', () => { 
-            currentActiveInput = bottomInput; 
-            bottomInputBox.classList.add('active-input-box'); 
-            topInputBox.classList.remove('active-input-box'); 
+
+        topInputBox.addEventListener('click', () => {
+            currentActiveInput = topInput;
+            topInputBox.classList.add('active-input-box');
+            bottomInputBox.classList.remove('active-input-box');
+        });
+
+        bottomInputBox.addEventListener('click', () => {
+            currentActiveInput = bottomInput;
+            bottomInputBox.classList.add('active-input-box');
+            topInputBox.classList.remove('active-input-box');
         });
 
         document.querySelectorAll('.numpad-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                try { tg.HapticFeedback.impactOccurred('light'); } catch(err) {}
-                const action = btn.getAttribute('data-action');
-                let currentVal = currentActiveInput.value;
-                
+                tg.HapticFeedback.impactOccurred('light');
+                const action = btn.dataset.action;
+                let val = currentActiveInput.value;
+
                 if (action === 'clear') currentActiveInput.value = '';
-                else if (action === 'backspace') currentActiveInput.value = currentVal.slice(0, -1);
-                else if (action === 'equal') { 
-                    const computed = safeEval(currentVal); 
-                    if(computed !== null) currentActiveInput.value = Number(computed.toFixed(6)).toString(); 
+                else if (action === 'backspace') currentActiveInput.value = val.slice(0, -1);
+                else if (action === 'equal') {
+                    try {
+                        let result = new Function(`return ${val.replace(/×/g,'*').replace(/÷/g,'/')}`)();
+                        currentActiveInput.value = parseFloat(result.toFixed(8));
+                    } catch {}
                 }
-                else if (['+', '-', '*', '/'].includes(action)) { 
-                    if (currentVal !== '' && !['+', '-', '*', '/'].includes(currentVal.slice(-1))) currentActiveInput.value += action; 
+                else if (['+', '-', '*', '/'].includes(action)) {
+                    if (val && !/[+\-*/]$/.test(val)) currentActiveInput.value += action;
                 }
-                else if (action === 'dot') { 
-                    const segments = currentVal.split(/[\+\-\*\/]/); 
-                    const lastSegment = segments[segments.length - 1]; 
-                    if (!lastSegment.includes('.')) {
-                        currentActiveInput.value += currentVal === '' || ['+', '-', '*', '/'].includes(currentVal.slice(-1)) ? '0.' : '.'; 
-                    }
+                else if (action === 'dot') {
+                    const lastNum = val.split(/[+\-*/]/).pop();
+                    if (!lastNum.includes('.')) currentActiveInput.value += (val === '' || /[+\-*/]$/.test(val)) ? '0.' : '.';
                 }
-                else { 
-                    if(currentVal === '0') currentActiveInput.value = action; 
-                    else currentActiveInput.value += action; 
+                else {
+                    currentActiveInput.value = (val === '0' && action !== '.') ? action : val + action;
                 }
-                
-                updateCalculator(currentActiveInput === topInput ? 'top' : 'bottom');
+
+                updateCalculator();
             });
         });
 
         swapBtn.addEventListener('click', () => {
-            try { tg.HapticFeedback.selectionChanged(); } catch(err) {}
+            tg.HapticFeedback.selectionChanged();
             isInverse = !isInverse;
-            topRoleLabel.innerText = isInverse ? i18n[currentLang].receiving : i18n[currentLang].giving;
-            bottomRoleLabel.innerText = isInverse ? i18n[currentLang].giving : i18n[currentLang].receiving;
             
-            const temp = topInput.value;
+            topRoleLabel.textContent = isInverse ? i18n[currentLang].receiving : i18n[currentLang].giving;
+            bottomRoleLabel.textContent = isInverse ? i18n[currentLang].giving : i18n[currentLang].receiving;
+
+            const tempVal = topInput.value;
             topInput.value = bottomInput.value;
-            bottomInput.value = temp;
-            
-            currentActiveInput = (currentActiveInput === topInput) ? bottomInput : topInput;
+            bottomInput.value = tempVal;
+
+            currentActiveInput = currentActiveInput === topInput ? bottomInput : topInput;
             topInputBox.classList.toggle('active-input-box');
             bottomInputBox.classList.toggle('active-input-box');
-            updateCalculator('top');
-        });
-
-        topSelect.addEventListener('change', () => { 
-            userHasEditedTarget = false; 
-            syncProfitFieldsWithSelected(topSelect.value); 
-            updateCalculator('top'); 
-        });
-        
-        bottomSelect.addEventListener('change', () => updateCalculator('top'));
-
-        tabCalcBtn.addEventListener('click', () => { 
-            tabCalcBtn.classList.add('active'); 
-            tabProfitBtn.classList.remove('active'); 
-            converterTabSection.classList.remove('hidden'); 
-            profitTabSection.classList.add('hidden'); 
-        });
-        
-        tabProfitBtn.addEventListener('click', () => { 
-            tabProfitBtn.classList.add('active'); 
-            tabCalcBtn.classList.remove('active'); 
-            profitTabSection.classList.remove('hidden'); 
-            converterTabSection.classList.add('hidden'); 
-            updateLiquidationMap(); 
-        });
-
-        calcProfitActionBtn.addEventListener('click', () => {
-            try { tg.HapticFeedback.notificationOccurred('success'); } catch(err) {}
             
-            const name = profitCoinSelect.options[profitCoinSelect.selectedIndex].text || "Token";
+            updateCalculator();
+        });
+
+        topSelect.addEventListener('change', updateCalculator);
+        bottomSelect.addEventListener('change', updateCalculator);
+
+        // Tab switching
+        tabCalcBtn.addEventListener('click', () => {
+            tabCalcBtn.classList.add('active');
+            tabProfitBtn.classList.remove('active');
+            converterTabSection.classList.remove('hidden');
+            profitTabSection.classList.add('hidden');
+        });
+
+        tabProfitBtn.addEventListener('click', () => {
+            tabCalcBtn.classList.remove('active');
+            tabProfitBtn.classList.add('active');
+            converterTabSection.classList.add('hidden');
+            profitTabSection.classList.remove('hidden');
+        });
+
+        // Profit calculator
+        calcProfitActionBtn.addEventListener('click', () => {
+            tg.HapticFeedback.notificationOccurred('success');
+            
+            const coinId = profitCoinSelect.value;
+            const name = coinsMeta[coinId]?.name || coinId;
             const price = parseFloat(profitCoinPrice.value);
             const investment = parseFloat(profitInvestment.value);
-            const target = parseFloat(profitTargetPrice.value);
+            const targetPrice = parseFloat(profitTargetPrice.value);
             const buyFee = parseFloat(profitBuyingFee.value) || 0;
             const sellFee = parseFloat(profitSellingFee.value) || 0;
-            
-            if (isNaN(price) || isNaN(investment) || isNaN(target) || price <= 0 || investment <= 0 || target <= 0) { 
-                profitResult.innerText = i18n[currentLang].err_fee; 
-                return; 
+
+            if (!price || !investment || !targetPrice || price <= 0 || investment <= 0) {
+                profitResult.innerHTML = `<span class="text-red-400">Введите корректные данные</span>`;
+                return;
             }
-            
-            const buyFeeAmount = (buyFee / 100) * investment;
-            const coinsOwned = investment / price;
-            const sellingFeeAmount = (sellFee / 100) * (coinsOwned * target);
-            const currentWorth = coinsOwned * price;
-            const targetWorth = (coinsOwned * target) - sellingFeeAmount;
-            const netProfit = targetWorth - currentWorth - buyFeeAmount;
-            
-            const isProfitable = netProfit >= 0;
-            profitResult.className = `p-3 rounded-xl min-h-[44px] flex items-center justify-center text-sm font-medium font-mono text-center border ${isProfitable ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`;
-            profitResult.innerText = i18n[currentLang].res_txt(name, target.toLocaleString('en-US'), netProfit.toFixed(2));
+
+            const coinsBought = investment / price * (1 - buyFee/100);
+            const grossSell = coinsBought * targetPrice;
+            const sellFeeAmount = grossSell * (sellFee / 100);
+            const netProfit = grossSell - sellFeeAmount - investment;
+
+            const isProfit = netProfit > 0;
+            profitResult.className = `min-h-[52px] rounded-2xl p-4 text-center font-mono text-sm border ${isProfit ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`;
+            profitResult.innerHTML = isProfit 
+                ? `Прибыль: <span class="font-bold">+$${netProfit.toFixed(2)}</span>` 
+                : `Убыток: <span class="font-bold">-$${Math.abs(netProfit).toFixed(2)}</span>`;
         });
 
-        let currentLiqPeriod = '24';
+        // Liquidation mock
+        let currentLiqPeriod = 24;
         let currentLiqAsset = 'btc';
-        
-        function getMockLiquidationData(period, asset) {
-            const data = {
-                btc: { long: { '24': 428, '48': 789 }, short: { '24': 312, '48': 654 } },
-                eth: { long: { '24': 215, '48': 401 }, short: { '24': 287, '48': 523 } }
-            };
-            let longVal = data[asset]?.long[period] || 428;
-            let shortVal = data[asset]?.short[period] || 312;
-            return { long: longVal, short: shortVal, total: longVal + shortVal };
-        }
 
         function updateLiquidationMap() {
-            const data = getMockLiquidationData(currentLiqPeriod, currentLiqAsset);
-            const longMill = data.long;
-            const shortMill = data.short;
-            const total = data.total; 
-            const longPercent = total > 0 ? (longMill / total * 100) : 0;
-            const shortPercent = total > 0 ? (shortMill / total * 100) : 0;
+            const base = currentLiqAsset === 'btc' ? { long: 428, short: 312 } : { long: 215, short: 287 };
+            const mult = currentLiqPeriod === 48 ? 1.85 : 1;
             
-            document.getElementById('liqLongValue').innerText = `$${longMill.toFixed(0)}M`;
-            document.getElementById('liqShortValue').innerText = `$${shortMill.toFixed(0)}M`;
-            document.getElementById('liqLongPercent').innerText = `${longPercent.toFixed(1)}%`;
-            document.getElementById('liqShortPercent').innerText = `${shortPercent.toFixed(1)}%`;
-            document.getElementById('liqRatioBar').style.width = `${longPercent}%`;
-            document.getElementById('liqPeriodLabel').innerText = currentLiqPeriod + 'h';
-            document.getElementById('liqAssetLabel').innerText = currentLiqAsset.toUpperCase();
+            const long = Math.round(base.long * mult);
+            const short = Math.round(base.short * mult);
+            const total = long + short;
+
+            document.getElementById('liqLongValue').textContent = `$${(long)}M`;
+            document.getElementById('liqShortValue').textContent = `$${(short)}M`;
+            document.getElementById('liqLongPercent').textContent = `${(long/total*100).toFixed(1)}%`;
+            document.getElementById('liqShortPercent').textContent = `${(short/total*100).toFixed(1)}%`;
         }
 
-        document.querySelectorAll('.period-switch').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.period-switch').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.period-switch, .asset-switch').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.period-switch, .asset-switch').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                currentLiqPeriod = btn.getAttribute('data-liq-period');
+                
+                if (btn.dataset.liqPeriod) currentLiqPeriod = parseInt(btn.dataset.liqPeriod);
+                if (btn.dataset.liqAsset) currentLiqAsset = btn.dataset.liqAsset;
+                
                 updateLiquidationMap();
-                try { tg.HapticFeedback.impactOccurred('light'); } catch(err) {}
+                tg.HapticFeedback.impactOccurred('light');
             });
-            if(btn.getAttribute('data-liq-period') === '24') btn.classList.add('active');
         });
 
-        document.querySelectorAll('.asset-switch').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.asset-switch').forEach(b => {
-                    b.classList.remove('active', 'bg-blue-500/20', 'text-blue-300', 'border-blue-500/40');
-                    b.classList.add('bg-gray-700/40', 'text-gray-300');
-                });
-                btn.classList.remove('bg-gray-700/40', 'text-gray-300');
-                btn.classList.add('active', 'bg-blue-500/20', 'text-blue-300', 'border-blue-500/40');
-                currentLiqAsset = btn.getAttribute('data-liq-asset');
-                updateLiquidationMap();
-                try { tg.HapticFeedback.impactOccurred('light'); } catch(err) {}
-            });
-            if(btn.getAttribute('data-liq-asset') === 'btc') {
-                btn.classList.add('active', 'bg-blue-500/20', 'text-blue-300', 'border-blue-500/40');
-            }
-        });
-
+        // ==================== MEMPOOL ====================
         async function fetchMempoolData() {
             try {
-                const [feesRes, blocksRes] = await Promise.all([
-                    fetch('https://mempool.space/api/v1/fees/recommended'), 
+                const [feeRes, diffRes] = await Promise.all([
+                    fetch('https://mempool.space/api/v1/fees/recommended'),
                     fetch('https://mempool.space/api/v1/difficulty-adjustment')
                 ]);
-                if(feesRes.ok) {
-                    const fees = await feesRes.json();
-                    
-                    // Динамический расчет комиссии в фиате
-                    let btcUsdPrice = ratesData['bitcoin']?.usd || 65000;
-                    // Средняя транзакция ~140 vB. 1 satoshi = btcPrice / 100 000 000
-                    let fiatMultiplier = (btcUsdPrice / 100000000) * 140;
 
-                    document.getElementById('gasNoPriority').innerText = `${fees.fastestFee} sat`;
-                    document.getElementById('gasLowPriority').innerText = `${fees.halfHourFee} sat`;
-                    document.getElementById('gasMedPriority').innerText = `${fees.hourFee} sat`;
-                    document.getElementById('gasHighPriority').innerText = `${fees.economyFee} sat`;
-                    
-                    document.getElementById('gasNoPriorityFiat').innerText = `$${(fees.fastestFee * fiatMultiplier).toFixed(2)}`;
-                    document.getElementById('gasLowPriorityFiat').innerText = `$${(fees.halfHourFee * fiatMultiplier).toFixed(2)}`;
-                    document.getElementById('gasMedPriorityFiat').innerText = `$${(fees.hourFee * fiatMultiplier).toFixed(2)}`;
-                    document.getElementById('gasHighPriorityFiat').innerText = `$${(fees.economyFee * fiatMultiplier).toFixed(2)}`;
-                }
-                if(blocksRes.ok) {
-                    const diff = await blocksRes.json();
-                    document.getElementById('mempoolDiff').innerText = `${diff.difficultyChange.toFixed(2)}%`;
-                    document.getElementById('mempoolUnconfirmed').innerText = `${diff.remainingBlocks} Blocks left`;
-                }
-            } catch(e) {
-                console.warn('Mempool fetch failed:', e);
+                const fees = await feeRes.json();
+                const diff = await diffRes.json();
+
+                const btcPrice = ratesData.bitcoin?.usd || 65000;
+                const satToUsd = (btcPrice / 100000000) * 140; // ~140 vB average tx
+
+                document.getElementById('gasLowPriority').textContent = fees.halfHourFee;
+                document.getElementById('gasMedPriority').textContent = fees.hourFee;
+                document.getElementById('gasHighPriority').textContent = fees.fastestFee;
+                document.getElementById('gasNoPriority').textContent = fees.economyFee || fees.minimumFee || 12;
+
+                document.getElementById('gasLowPriorityFiat').textContent = '$' + (fees.halfHourFee * satToUsd).toFixed(2);
+                document.getElementById('gasMedPriorityFiat').textContent = '$' + (fees.hourFee * satToUsd).toFixed(2);
+                document.getElementById('gasHighPriorityFiat').textContent = '$' + (fees.fastestFee * satToUsd).toFixed(2);
+                document.getElementById('gasNoPriorityFiat').textContent = '$' + ((fees.economyFee || 12) * satToUsd).toFixed(2);
+
+                document.getElementById('mempoolUnconfirmed').innerHTML = `${diff.remainingBlocks || '?'} бл. до халвинга`;
+            } catch (e) {
+                console.warn('Mempool data unavailable');
             }
         }
 
-        fetchRates();
-        fetchMempoolData();
-        setInterval(fetchRates, CACHE_TTL);
-        setInterval(fetchMempoolData, CACHE_TTL * 2);
-        
-        setTimeout(() => {
-            syncProfitFieldsWithSelected(topSelect.value);
-            updateCalculator('top');
-        }, 100);
+        // ==================== INIT ====================
+        function init() {
+            syncSelectOptions();
+            fetchRates();
+            fetchMempoolData();
+            
+            setInterval(fetchRates, CACHE_TTL);
+            setInterval(fetchMempoolData, 90000);
+
+            // Initial values
+            setTimeout(() => {
+                topInput.value = "1";
+                bottomInput.value = "65000";
+                updateCalculator();
+            }, 200);
+
+            // Click anywhere on pin container to select coin
+            pinsContainer.addEventListener('click', (e) => {
+                if (e.target.closest('.delete-pin-btn')) return;
+                const card = e.target.closest('.pin-card');
+                if (card) {
+                    const id = card.dataset.id;
+                    tg.HapticFeedback.impactOccurred('light');
+                    topSelect.value = id;
+                    updateCalculator();
+                }
+            });
+        }
+
+        init();
     </script>
 </body>
 </html>
