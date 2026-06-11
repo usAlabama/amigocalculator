@@ -75,13 +75,6 @@
         .liq-stat-card:active {
             transform: scale(0.98);
         }
-        .delete-pin-btn {
-            pointer-events: auto !important;
-            position: relative;
-            z-index: 10;
-            min-width: 20px;
-            min-height: 20px;
-        }
     </style>
 </head>
 <body class="p-2 h-screen flex flex-col justify-between select-none">
@@ -102,7 +95,7 @@
             
             <div class="flex items-center space-x-2">
                 <button id="toggleSearchBtn" class="tg-primary-btn h-[58px] w-11 rounded-xl flex items-center justify-center shrink-0 font-bold text-xl active:scale-95 transition-transform shadow-md">+</button>
-                <div id="pinsContainer" class="flex items-center space-x-2 overflow-x-auto py-1 no-scrollbar flex-1 min-h-[64px] touch-pan-x"></div>
+                <div id="pinsContainer" class="flex items-center space-x-2 overflow-x-auto py-1 no-scrollbar flex-1 min-h-[64px] touch-pan-x pt-2"></div>
             </div>
         </div>
 
@@ -128,7 +121,7 @@
                 </div>
                 <div class="flex items-center justify-between">
                     <input type="text" id="topInput" value="1" readonly class="w-2/3 bg-transparent text-2xl font-bold focus:outline-none border-none p-0 text-white pointer-events-none">
-                    <select id="topSelect" class="bg-zinc-800 text-white border border-gray-600 rounded-lg px-2 py-1 text-xs font-semibold focus:outline-none"></select>
+                    <select id="topSelect" class="bg-zinc-800 text-white border border-gray-600 rounded-lg px-2 py-1 text-xs font-semibold focus:outline-none cursor-pointer"></select>
                 </div>
             </div>
 
@@ -147,7 +140,7 @@
                 </div>
                 <div class="flex items-center justify-between">
                     <input type="text" id="bottomInput" placeholder="0.00" readonly class="w-2/3 bg-transparent text-2xl font-bold focus:outline-none border-none p-0 text-white pointer-events-none">
-                    <select id="bottomSelect" class="bg-zinc-800 text-white border border-gray-600 rounded-lg px-2 py-1 text-xs font-semibold focus:outline-none">
+                    <select id="bottomSelect" class="bg-zinc-800 text-white border border-gray-600 rounded-lg px-2 py-1 text-xs font-semibold focus:outline-none cursor-pointer">
                         <option value="usd" data-symbol="$" selected>USD</option>
                         <option value="eur" data-symbol="€">EUR</option>
                         <option value="rub" data-symbol="₽">RUB</option>
@@ -192,33 +185,33 @@
                         <span class="w-2 h-2 rounded-full bg-orange-500 inline-block animate-pulse"></span>
                         <span>Bitcoin Mempool Gas Fees</span>
                     </span>
-                    <span class="text-[10px] tg-hint font-mono" id="mempoolUnconfirmed">110,023 TXs</span>
+                    <span class="text-[10px] tg-hint font-mono" id="mempoolUnconfirmed">... TXs</span>
                 </div>
                 <div class="grid grid-cols-4 gap-2 text-center text-[10px]">
                     <div class="bg-black/20 p-1.5 rounded-lg border border-gray-800">
                         <div class="text-gray-400 font-medium">No Priority</div>
-                        <div class="text-emerald-400 font-bold font-mono mt-0.5" id="gasNoPriority">0.2 sat</div>
-                        <div class="text-[9px] tg-hint mt-0.2" id="gasNoPriorityFiat">$0.02</div>
+                        <div class="text-emerald-400 font-bold font-mono mt-0.5" id="gasNoPriority">0 sat</div>
+                        <div class="text-[9px] tg-hint mt-0.2" id="gasNoPriorityFiat">$0.00</div>
                     </div>
                     <div class="bg-black/20 p-1.5 rounded-lg border border-gray-800">
                         <div class="text-gray-400 font-medium">Low</div>
-                        <div class="text-yellow-400 font-bold font-mono mt-0.5" id="gasLowPriority">1 sat</div>
-                        <div class="text-[9px] tg-hint mt-0.2" id="gasLowPriorityFiat">$0.12</div>
+                        <div class="text-yellow-400 font-bold font-mono mt-0.5" id="gasLowPriority">0 sat</div>
+                        <div class="text-[9px] tg-hint mt-0.2" id="gasLowPriorityFiat">$0.00</div>
                     </div>
                     <div class="bg-black/20 p-1.5 rounded-lg border border-gray-800">
                         <div class="text-gray-400 font-medium">Medium</div>
-                        <div class="text-orange-400 font-bold font-mono mt-0.5" id="gasMedPriority">2 sat</div>
-                        <div class="text-[9px] tg-hint mt-0.2" id="gasMedPriorityFiat">$0.21</div>
+                        <div class="text-orange-400 font-bold font-mono mt-0.5" id="gasMedPriority">0 sat</div>
+                        <div class="text-[9px] tg-hint mt-0.2" id="gasMedPriorityFiat">$0.00</div>
                     </div>
                     <div class="bg-black/20 p-1.5 rounded-lg border border-gray-800">
                         <div class="text-gray-400 font-medium">High</div>
-                        <div class="text-red-400 font-bold font-mono mt-0.5" id="gasHighPriority">4 sat</div>
-                        <div class="text-[9px] tg-hint mt-0.2" id="gasHighPriorityFiat">$0.31</div>
+                        <div class="text-red-400 font-bold font-mono mt-0.5" id="gasHighPriority">0 sat</div>
+                        <div class="text-[9px] tg-hint mt-0.2" id="gasHighPriorityFiat">$0.00</div>
                     </div>
                 </div>
                 <div class="flex justify-between items-center text-[10px] pt-1 text-gray-400 font-mono">
-                    <div>Block Time: <span class="text-white" id="mempoolBlockTime">~11.1 min</span></div>
-                    <div>Difficulty Adj: <span class="text-red-400" id="mempoolDiff">-10.25%</span></div>
+                    <div>Block Time: <span class="text-white" id="mempoolBlockTime">~10.0 min</span></div>
+                    <div>Difficulty Adj: <span class="text-red-400" id="mempoolDiff">...%</span></div>
                 </div>
             </div>
         </div>
@@ -227,8 +220,8 @@
             <h2 data-i18n="profit_calc_title" class="text-base font-bold text-center text-white">Калькулятор прибыли</h2>
             
             <div class="flex flex-col space-y-1">
-                <label data-i18n="p_coin_name" class="text-xs tg-hint text-left pl-1">Название криптовалюты:</label>
-                <input type="text" id="profitCoinName" class="bg-zinc-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none">
+                <label data-i18n="p_coin_name" class="text-xs tg-hint text-left pl-1">Выберите монету:</label>
+                <select id="profitCoinSelect" class="bg-zinc-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none cursor-pointer"></select>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
@@ -306,7 +299,7 @@
             ru: {
                 monitor_title: "Монитор & Пины", search_btn: "Найти", tab_converter: "Конвертер", tab_profit: "Калькулятор Профита",
                 giving: "Отдаю", receiving: "Получаю", cross_rate: "Текущий кросс-курс:", profit_calc_title: "Калькулятор прибыли",
-                p_coin_name: "Название криптовалюты:", p_current_price: "Текущая цена ($):", p_investment: "Инвестиция ($):",
+                p_coin_name: "Выберите монету:", p_current_price: "Текущая цена ($):", p_investment: "Инвестиция ($):",
                 p_target_price: "Целевая цена продажи ($):", p_buy_fee: "Комиссия покупки (%):", p_sell_fee: "Комиссия продажи (%):",
                 p_calc_btn: "Рассчитать прибыль", err_fee: "Введите корректные данные", 
                 res_txt: (name, target, profit) => `При продаже ${name} по $${target}, чистая прибыль: $${profit}`
@@ -314,7 +307,7 @@
             uk: {
                 monitor_title: "Монітор & Піни", search_btn: "Знайти", tab_converter: "Конвертер", tab_profit: "Калькулятор Профіту",
                 giving: "Віддаю", receiving: "Отримую", cross_rate: "Поточний кросс-курс:", profit_calc_title: "Калькулятор прибутку",
-                p_coin_name: "Назва криптовалюти:", p_current_price: "Поточна ціна ($):", p_investment: "Інвестиція ($):",
+                p_coin_name: "Оберіть монету:", p_current_price: "Поточна ціна ($):", p_investment: "Інвестиція ($):",
                 p_target_price: "Цільова ціна продажу ($):", p_buy_fee: "Комісія купівлі (%):", p_sell_fee: "Комісія продажу (%):",
                 p_calc_btn: "Розрахувати прибуток", err_fee: "Введіть коректні дані",
                 res_txt: (name, target, profit) => `При продажу ${name} за $${target}, чистий прибуток: $${profit}`
@@ -322,7 +315,7 @@
             en: {
                 monitor_title: "Monitor & Pins", search_btn: "Search", tab_converter: "Converter", tab_profit: "Profit Calc",
                 giving: "Giving", receiving: "Receiving", cross_rate: "Current Cross Rate:", profit_calc_title: "Profit Calculator",
-                p_coin_name: "Cryptocurrency Name:", p_current_price: "Current Price ($):", p_investment: "Investment ($):",
+                p_coin_name: "Select Coin:", p_current_price: "Current Price ($):", p_investment: "Investment ($):",
                 p_target_price: "Target Sell Price ($):", p_buy_fee: "Buying Fee (%):", p_sell_fee: "Selling Fee (%):",
                 p_calc_btn: "Calculate Profit", err_fee: "Please enter valid numbers",
                 res_txt: (name, target, profit) => `Selling ${name} at $${target} yields a profit of: $${profit}`
@@ -362,7 +355,10 @@
         const tabProfitBtn = document.getElementById('tabProfitBtn');
         const converterTabSection = document.getElementById('converterTabSection');
         const profitTabSection = document.getElementById('profitTabSection');
-        const profitCoinName = document.getElementById('profitCoinName');
+        
+        // Исправлено: теперь это выпадающий список
+        const profitCoinSelect = document.getElementById('profitCoinSelect');
+        
         const profitCoinPrice = document.getElementById('profitCoinPrice');
         const profitInvestment = document.getElementById('profitInvestment');
         const profitTargetPrice = document.getElementById('profitTargetPrice');
@@ -384,8 +380,8 @@
             solana: { symbol: 'SOL', name: 'Solana', sparkline: [], change24h: 0 }
         };
 
-        const CACHE_KEY = 'twa_terminal_rates_v5';
-        const META_CACHE_KEY = 'twa_terminal_meta_v5';
+        const CACHE_KEY = 'twa_terminal_rates_v6';
+        const META_CACHE_KEY = 'twa_terminal_meta_v6';
         const CACHE_TTL = 60000;
 
         if (localStorage.getItem(META_CACHE_KEY)) {
@@ -401,15 +397,30 @@
 
         function syncSelectOptions() {
             const currentTopVal = topSelect.value;
+            const currentProfitVal = profitCoinSelect.value;
+            
             topSelect.innerHTML = '';
+            profitCoinSelect.innerHTML = '';
+            
             pinnedCoins.forEach(id => {
-                const option = document.createElement('option');
-                option.value = id;
-                option.setAttribute('data-symbol', coinsMeta[id]?.symbol || id.toUpperCase());
-                option.innerText = coinsMeta[id]?.symbol || id.toUpperCase();
-                topSelect.appendChild(option);
+                const sym = coinsMeta[id]?.symbol || id.toUpperCase();
+                
+                // Для главного конвертера
+                const optionTop = document.createElement('option');
+                optionTop.value = id;
+                optionTop.setAttribute('data-symbol', sym);
+                optionTop.innerText = sym;
+                topSelect.appendChild(optionTop);
+                
+                // Для калькулятора профита
+                const optionProfit = document.createElement('option');
+                optionProfit.value = id;
+                optionProfit.innerText = coinsMeta[id]?.name || sym;
+                profitCoinSelect.appendChild(optionProfit);
             });
+            
             topSelect.value = pinnedCoins.includes(currentTopVal) ? currentTopVal : pinnedCoins[0];
+            profitCoinSelect.value = pinnedCoins.includes(currentProfitVal) ? currentProfitVal : pinnedCoins[0];
         }
 
         function generateSparklineSVG(prices) {
@@ -456,7 +467,7 @@
                     priceColorClass = (meta.change24h >= 0) ? 'text-emerald-400 font-semibold' : 'text-red-400 font-semibold';
                 }
                 const card = document.createElement('div');
-                card.className = 'pin-card flex items-center space-x-2 bg-zinc-800/80 border border-gray-700/40 px-2.5 py-1.5 rounded-xl shrink-0 cursor-grab active:cursor-grabbing relative';
+                card.className = 'pin-card flex items-center space-x-2 bg-zinc-800/80 border border-gray-700/40 px-2.5 py-1.5 rounded-xl shrink-0 cursor-grab active:cursor-grabbing relative mt-1';
                 card.setAttribute('draggable', 'true');
                 card.setAttribute('data-id', id);
                 card.innerHTML = `
@@ -465,14 +476,14 @@
                         <span class="text-[10px] font-mono ${priceColorClass}">${priceText}</span>
                     </div>
                     <div class="bg-black/20 rounded px-1 py-0.5 flex items-center justify-center pointer-events-none h-6">${generateSparklineSVG(meta.sparkline)}</div>
-                    <button class="delete-pin-btn text-gray-500 hover:text-red-400 text-sm font-bold pl-0.5 focus:outline-none" data-id="${id}" draggable="false">×</button>
+                    
+                    <button class="delete-pin-btn absolute -top-2 -right-2 w-[22px] h-[22px] bg-red-500/90 text-white rounded-full text-[12px] flex items-center justify-center hover:bg-red-400 transition-colors z-20 shadow-lg border border-gray-900" data-id="${id}" draggable="false">✕</button>
                 `;
                 pinsContainer.appendChild(card);
             });
             initDragAndDrop();
         }
 
-        // ДЕЛЕГИРОВАНИЕ СОБЫТИЙ для пинов (надёжнее)
         pinsContainer.addEventListener('click', (e) => {
             const delBtn = e.target.closest('.delete-pin-btn');
             if (delBtn) {
@@ -502,13 +513,18 @@
 
         function syncProfitFieldsWithSelected(coinId) {
             if(coinsMeta[coinId]) {
-                profitCoinName.value = coinsMeta[coinId].name;
+                profitCoinSelect.value = coinId;
                 if(ratesData[coinId] && ratesData[coinId]['usd']) {
                     profitCoinPrice.value = ratesData[coinId]['usd'];
                     if (!userHasEditedTarget) profitTargetPrice.value = (ratesData[coinId]['usd'] * 1.2).toFixed(2);
                 }
             }
         }
+        
+        profitCoinSelect.addEventListener('change', (e) => {
+            userHasEditedTarget = false;
+            syncProfitFieldsWithSelected(e.target.value);
+        });
 
         function initDragAndDrop() {
             const cards = document.querySelectorAll('.pin-card');
@@ -547,29 +563,20 @@
             }
         });
 
-        // CORS-прокси для CoinGecko
-        async function fetchWithProxy(url) {
-            const proxies = [
-                `https://corsproxy.io/?${encodeURIComponent(url)}`,
-                `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-                `https://cors-anywhere.herokuapp.com/${url}`
-            ];
+        // Исправленный умный фетчер для API без лишних прокси-ошибок
+        async function fetchCG(url) {
+            try {
+                const res = await fetch(url);
+                if (res.ok) return await res.json();
+            } catch(e) {}
             
-            for (const proxyUrl of proxies) {
-                try {
-                    const res = await fetch(proxyUrl, { 
-                        method: 'GET',
-                        headers: { 'Accept': 'application/json' }
-                    });
-                    if (res.ok) {
-                        const data = await res.json();
-                        return data;
-                    }
-                } catch (e) {
-                    continue;
-                }
-            }
-            throw new Error('All proxies failed');
+            // Надежный фоллбэк
+            try {
+                const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+                if (res.ok) return await res.json();
+            } catch(e) {}
+            
+            throw new Error('API Request Failed');
         }
 
         executeSearchBtn.addEventListener('click', async () => {
@@ -579,7 +586,7 @@
             searchStatus.className = "text-[11px] text-blue-400 px-1";
             
             try {
-                const data = await fetchWithProxy(`https://api.coingecko.com/api/v3/search?query=${query}`);
+                const data = await fetchCG(`https://api.coingecko.com/api/v3/search?query=${query}`);
                 
                 if(!data.coins || data.coins.length === 0) { 
                     searchStatus.innerText = "Не найдено"; 
@@ -600,7 +607,7 @@
                 
                 let sparklineData = [];
                 try {
-                    const histData = await fetchWithProxy(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7&interval=daily`);
+                    const histData = await fetchCG(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7&interval=daily`);
                     if (histData && histData.prices) {
                         sparklineData = histData.prices.map(p => p[1]);
                     }
@@ -626,7 +633,7 @@
                 try { tg.HapticFeedback.notificationOccurred('success'); } catch(err) {}
             } catch (err) { 
                 console.error('Search error:', err);
-                searchStatus.innerText = "Ошибка API. Попробуйте позже."; 
+                searchStatus.innerText = "Ошибка сети. Попробуйте позже."; 
                 searchStatus.className = "text-[11px] text-red-400 px-1";
             }
         });
@@ -647,7 +654,7 @@
             
             try {
                 const coinsStr = pinnedCoins.join(',');
-                const fullData = await fetchWithProxy(`https://api.coingecko.com/api/v3/simple/price?ids=${coinsStr}&vs_currencies=usd,eur,rub&include_24hr_change=true`);
+                const fullData = await fetchCG(`https://api.coingecko.com/api/v3/simple/price?ids=${coinsStr}&vs_currencies=usd,eur,rub&include_24hr_change=true`);
                 
                 ratesData = {};
                 pinnedCoins.forEach(id => {
@@ -666,13 +673,11 @@
                 for (let id of pinnedCoins) {
                     if (!coinsMeta[id].sparkline || coinsMeta[id].sparkline.length === 0) {
                         try {
-                            const hData = await fetchWithProxy(`https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7&interval=daily`);
+                            const hData = await fetchCG(`https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7&interval=daily`);
                             if (hData && hData.prices) {
                                 coinsMeta[id].sparkline = hData.prices.map(p => p[1]);
                             }
-                        } catch (err) {
-                            console.warn(`Sparkline fetch failed for ${id}:`, err);
-                        }
+                        } catch (err) {}
                     }
                 }
                 
@@ -818,7 +823,8 @@
 
         calcProfitActionBtn.addEventListener('click', () => {
             try { tg.HapticFeedback.notificationOccurred('success'); } catch(err) {}
-            const name = profitCoinName.value || "Token";
+            
+            const name = profitCoinSelect.options[profitCoinSelect.selectedIndex].text || "Token";
             const price = parseFloat(profitCoinPrice.value);
             const investment = parseFloat(profitInvestment.value);
             const target = parseFloat(profitTargetPrice.value);
@@ -842,7 +848,6 @@
             profitResult.innerText = i18n[currentLang].res_txt(name, target.toLocaleString('en-US'), netProfit.toFixed(2));
         });
 
-        // ========== КАРТА ЛИКВИДАЦИЙ ==========
         let currentLiqPeriod = '24';
         let currentLiqAsset = 'btc';
         
@@ -873,7 +878,6 @@
             document.getElementById('liqAssetLabel').innerText = currentLiqAsset.toUpperCase();
         }
 
-        // Переключатели периодов
         document.querySelectorAll('.period-switch').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.period-switch').forEach(b => b.classList.remove('active'));
@@ -885,7 +889,6 @@
             if(btn.getAttribute('data-liq-period') === '24') btn.classList.add('active');
         });
 
-        // Переключатели активов (ИСПРАВЛЕНО)
         document.querySelectorAll('.asset-switch').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.asset-switch').forEach(b => {
@@ -911,14 +914,21 @@
                 ]);
                 if(feesRes.ok) {
                     const fees = await feesRes.json();
+                    
+                    // Динамический расчет комиссии в фиате
+                    let btcUsdPrice = ratesData['bitcoin']?.usd || 65000;
+                    // Средняя транзакция ~140 vB. 1 satoshi = btcPrice / 100 000 000
+                    let fiatMultiplier = (btcUsdPrice / 100000000) * 140;
+
                     document.getElementById('gasNoPriority').innerText = `${fees.fastestFee} sat`;
                     document.getElementById('gasLowPriority').innerText = `${fees.halfHourFee} sat`;
                     document.getElementById('gasMedPriority').innerText = `${fees.hourFee} sat`;
                     document.getElementById('gasHighPriority').innerText = `${fees.economyFee} sat`;
-                    document.getElementById('gasNoPriorityFiat').innerText = `$${(fees.fastestFee * 0.08).toFixed(2)}`;
-                    document.getElementById('gasLowPriorityFiat').innerText = `$${(fees.halfHourFee * 0.08).toFixed(2)}`;
-                    document.getElementById('gasMedPriorityFiat').innerText = `$${(fees.hourFee * 0.08).toFixed(2)}`;
-                    document.getElementById('gasHighPriorityFiat').innerText = `$${(fees.economyFee * 0.08).toFixed(2)}`;
+                    
+                    document.getElementById('gasNoPriorityFiat').innerText = `$${(fees.fastestFee * fiatMultiplier).toFixed(2)}`;
+                    document.getElementById('gasLowPriorityFiat').innerText = `$${(fees.halfHourFee * fiatMultiplier).toFixed(2)}`;
+                    document.getElementById('gasMedPriorityFiat').innerText = `$${(fees.hourFee * fiatMultiplier).toFixed(2)}`;
+                    document.getElementById('gasHighPriorityFiat').innerText = `$${(fees.economyFee * fiatMultiplier).toFixed(2)}`;
                 }
                 if(blocksRes.ok) {
                     const diff = await blocksRes.json();
@@ -930,13 +940,11 @@
             }
         }
 
-        // Инициализация
         fetchRates();
         fetchMempoolData();
         setInterval(fetchRates, CACHE_TTL);
         setInterval(fetchMempoolData, CACHE_TTL * 2);
         
-        // Синхронизация при загрузке
         setTimeout(() => {
             syncProfitFieldsWithSelected(topSelect.value);
             updateCalculator('top');
