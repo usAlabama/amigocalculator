@@ -114,8 +114,8 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <input type="text" id="topInput" value="1" 
-                           class="flex-1 bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white">
-                    <select id="topSelect" class="bg-zinc-900 border border-gray-600 rounded-2xl px-4 py-2 text-sm font-semibold focus:outline-none cursor-pointer"></select>
+                           class="flex-1 min-w-0 bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white">
+                    <select id="topSelect" class="bg-zinc-900 border border-gray-600 rounded-2xl px-3 py-2 text-sm font-semibold focus:outline-none cursor-pointer w-[110px] shrink-0 truncate"></select>
                 </div>
             </div>
 
@@ -134,8 +134,8 @@
                 </div>
                 <div class="flex items-center gap-3">
                     <input type="text" id="bottomInput" value="65000" 
-                           class="flex-1 bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white">
-                    <select id="bottomSelect" class="bg-zinc-900 border border-gray-600 rounded-2xl px-4 py-2 text-sm font-semibold focus:outline-none cursor-pointer"></select>
+                           class="flex-1 min-w-0 bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white">
+                    <select id="bottomSelect" class="bg-zinc-900 border border-gray-600 rounded-2xl px-3 py-2 text-sm font-semibold focus:outline-none cursor-pointer w-[110px] shrink-0 truncate"></select>
                 </div>
             </div>
 
@@ -179,26 +179,26 @@
                     </span>
                     <span id="mempoolUnconfirmed" class="text-[10px] font-mono text-gray-400"></span>
                 </div>
-                <div class="grid grid-cols-4 gap-2 text-center text-[10px]">
+                <div class="grid grid-cols-4 gap-2 text-center text-xs">
                     <div class="bg-black/30 p-2 rounded-2xl">
                         <div class="text-gray-400">Low</div>
-                        <div id="gasLowPriority" class="font-mono font-bold text-yellow-400 mt-1">0</div>
-                        <div id="gasLowPriorityFiat" class="text-[9px] text-gray-500">$0</div>
+                        <div id="gasLowPriority" class="font-mono font-bold text-yellow-400 mt-1 text-base">0</div>
+                        <div id="gasLowPriorityFiat" class="text-[10px] text-gray-500">$0</div>
                     </div>
                     <div class="bg-black/30 p-2 rounded-2xl">
                         <div class="text-gray-400">Medium</div>
-                        <div id="gasMedPriority" class="font-mono font-bold text-orange-400 mt-1">0</div>
-                        <div id="gasMedPriorityFiat" class="text-[9px] text-gray-500">$0</div>
+                        <div id="gasMedPriority" class="font-mono font-bold text-orange-400 mt-1 text-base">0</div>
+                        <div id="gasMedPriorityFiat" class="text-[10px] text-gray-500">$0</div>
                     </div>
                     <div class="bg-black/30 p-2 rounded-2xl">
                         <div class="text-gray-400">High</div>
-                        <div id="gasHighPriority" class="font-mono font-bold text-red-400 mt-1">0</div>
-                        <div id="gasHighPriorityFiat" class="text-[9px] text-gray-500">$0</div>
+                        <div id="gasHighPriority" class="font-mono font-bold text-red-400 mt-1 text-base">0</div>
+                        <div id="gasHighPriorityFiat" class="text-[10px] text-gray-500">$0</div>
                     </div>
                     <div class="bg-black/30 p-2 rounded-2xl">
                         <div class="text-gray-400">Fastest</div>
-                        <div id="gasNoPriority" class="font-mono font-bold text-purple-400 mt-1">0</div>
-                        <div id="gasNoPriorityFiat" class="text-[9px] text-gray-500">$0</div>
+                        <div id="gasNoPriority" class="font-mono font-bold text-purple-400 mt-1 text-base">0</div>
+                        <div id="gasNoPriorityFiat" class="text-[10px] text-gray-500">$0</div>
                     </div>
                 </div>
             </div>
