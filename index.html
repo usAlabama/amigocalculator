@@ -69,6 +69,13 @@
             color: white !important;
             border-color: transparent !important;
         }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .ws-live-dot {
+            animation: pulse-dot 1.5s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="p-2 h-screen flex flex-col justify-between select-none">
@@ -240,8 +247,11 @@
             
             <div class="bg-black/30 rounded-3xl p-4 border border-gray-800 -mt-2">
                 <div class="flex justify-between items-center mb-3">
-                    <span class="text-xs font-bold uppercase tracking-widest">Недавние ликвидации (Live)</span>
-                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-mono">Binance API</span>
+                    <span class="text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                        <span id="wsStatusDot" class="w-1.5 h-1.5 bg-zinc-600 rounded-full"></span>
+                        Ликвидации (24h)
+                    </span>
+                    <span id="wsStatusBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-400 font-mono">подключение...</span>
                 </div>
                 <div class="flex gap-2 mb-4">
                     <button data-liq-asset="btc" class="liq-switch-btn asset-switch active flex-1 py-2 rounded-2xl text-sm font-bold">BTC</button>
@@ -250,17 +260,17 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-3 text-center">
                         <div class="text-emerald-400 text-xs font-bold">LONG (Продажи)</div>
-                        <div id="liqLongValue" class="text-2xl font-bold text-emerald-400 font-mono">Загрузка...</div>
-                        <div id="liqLongPercent" class="text-emerald-500/70 text-xs">0%</div>
+                        <div id="liqLongValue" class="text-2xl font-bold text-emerald-400 font-mono">—</div>
+                        <div id="liqLongPercent" class="text-emerald-500/70 text-xs">—</div>
                     </div>
                     <div class="bg-red-500/10 border border-red-500/30 rounded-2xl p-3 text-center">
                         <div class="text-red-400 text-xs font-bold">SHORT (Покупки)</div>
-                        <div id="liqShortValue" class="text-2xl font-bold text-red-400 font-mono">Загрузка...</div>
-                        <div id="liqShortPercent" class="text-red-500/70 text-xs">0%</div>
+                        <div id="liqShortValue" class="text-2xl font-bold text-red-400 font-mono">—</div>
+                        <div id="liqShortPercent" class="text-red-500/70 text-xs">—</div>
                     </div>
                 </div>
                 <div class="mt-3 text-[10px] text-gray-500 text-center leading-tight">
-                    * Сумма последних 500 принудительных закрытий. Не является финансовой рекомендацией.
+                    * Прямой поток Binance Futures WebSocket. Обновление в реальном времени.
                 </div>
             </div>
         </div>
@@ -826,57 +836,152 @@
             : `Убыток: <span class="font-bold">-$${Math.abs(netProfit).toFixed(2)}</span>`;
     });
 
-    // ==================== REAL LIQUIDATIONS ====================
-    async function fetchLiquidations() {
-        try {
-            const [btcRes, ethRes] = await Promise.all([
-                fetch('https://fapi.binance.com/fapi/v1/allForceOrders?symbol=BTCUSDT&limit=500'),
-                fetch('https://fapi.binance.com/fapi/v1/allForceOrders?symbol=ETHUSDT&limit=500')
-            ]);
-            
-            const btcData = await btcRes.json();
-            const ethData = await ethRes.json();
-            
-            let btcLong = 0, btcShort = 0;
-            let ethLong = 0, ethShort = 0;
-            
-            // Binance: SELL = Long liquidation (forced to sell), BUY = Short liquidation (forced to buy)
-            if (Array.isArray(btcData)) {
-                btcData.forEach(order => {
-                    const val = parseFloat(order.qty) * parseFloat(order.price);
-                    if (order.side === 'SELL') btcLong += val;
-                    else if (order.side === 'BUY') btcShort += val;
-                });
-            }
-            
-            if (Array.isArray(ethData)) {
-                ethData.forEach(order => {
-                    const val = parseFloat(order.qty) * parseFloat(order.price);
-                    if (order.side === 'SELL') ethLong += val;
-                    else if (order.side === 'BUY') ethShort += val;
-                });
-            }
-            
-            const isBtc = currentLiqAsset === 'btc';
-            const longVal = isBtc ? btcLong : ethLong;
-            const shortVal = isBtc ? btcShort : ethShort;
-            const total = longVal + shortVal;
-            
-            const longEl = document.getElementById('liqLongValue');
-            const shortEl = document.getElementById('liqShortValue');
-            const longPctEl = document.getElementById('liqLongPercent');
-            const shortPctEl = document.getElementById('liqShortPercent');
+    // ==================== REAL LIQUIDATIONS (WebSocket Binance Futures) ====================
+    // Буфер хранит все ликвидации за последние 24 часа
+    // Структура: { BTCUSDT: [{t: timestamp, s: 'SELL'|'BUY', v: volume_usd}], ETHUSDT: [...] }
+    const liqBuffer = { BTCUSDT: [], ETHUSDT: [] };
+    const LIQ_RETENTION_MS = 24 * 60 * 60 * 1000; // 24 часа
+    let wsConnection = null;
+    let wsReconnectTimer = null;
+    let wsIsAlive = false;
 
-            if (longEl) longEl.textContent = total > 0 ? `$${(longVal / 1000000).toFixed(1)}M` : '$0M';
-            if (shortEl) shortEl.textContent = total > 0 ? `$${(shortVal / 1000000).toFixed(1)}M` : '$0M';
-            if (longPctEl) longPctEl.textContent = total > 0 ? `${((longVal / total) * 100).toFixed(1)}%` : '0%';
-            if (shortPctEl) shortPctEl.textContent = total > 0 ? `${((shortVal / total) * 100).toFixed(1)}%` : '0%';
-            
-        } catch (e) {
-            console.error('Liquidation fetch error:', e);
-            document.getElementById('liqLongValue').textContent = 'NetErr';
-            document.getElementById('liqShortValue').textContent = 'NetErr';
+    function updateWsStatus(state) {
+        const dot = document.getElementById('wsStatusDot');
+        const badge = document.getElementById('wsStatusBadge');
+        if (!dot || !badge) return;
+        
+        if (state === 'live') {
+            dot.className = 'w-1.5 h-1.5 bg-emerald-400 rounded-full ws-live-dot';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono';
+            badge.textContent = 'LIVE';
+        } else if (state === 'reconnecting') {
+            dot.className = 'w-1.5 h-1.5 bg-amber-400 rounded-full ws-live-dot';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-mono';
+            badge.textContent = 'reconnect...';
+        } else {
+            dot.className = 'w-1.5 h-1.5 bg-zinc-600 rounded-full';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-400 font-mono';
+            badge.textContent = 'offline';
         }
+    }
+
+    function cleanOldLiquidations() {
+        const cutoff = Date.now() - LIQ_RETENTION_MS;
+        ['BTCUSDT', 'ETHUSDT'].forEach(symbol => {
+            liqBuffer[symbol] = liqBuffer[symbol].filter(item => item.t >= cutoff);
+        });
+    }
+
+    function renderLiquidations() {
+        cleanOldLiquidations();
+        
+        const symbol = currentLiqAsset === 'btc' ? 'BTCUSDT' : 'ETHUSDT';
+        const data = liqBuffer[symbol];
+        
+        const longEl = document.getElementById('liqLongValue');
+        const shortEl = document.getElementById('liqShortValue');
+        const longPctEl = document.getElementById('liqLongPercent');
+        const shortPctEl = document.getElementById('liqShortPercent');
+
+        if (!data || data.length === 0) {
+            if (longEl) longEl.textContent = '—';
+            if (shortEl) shortEl.textContent = '—';
+            if (longPctEl) longPctEl.textContent = 'нет данных';
+            if (shortPctEl) shortPctEl.textContent = 'нет данных';
+            return;
+        }
+
+        let longSum = 0, shortSum = 0;
+        data.forEach(item => {
+            if (item.s === 'SELL') longSum += item.v;   // Биржа продала → ликвидировали LONG
+            else if (item.s === 'BUY') shortSum += item.v; // Биржа купила → ликвидировали SHORT
+        });
+
+        const total = longSum + shortSum;
+        
+        const formatM = (v) => {
+            if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(2)}M`;
+            if (v >= 1_000) return `$${(v / 1_000).toFixed(1)}K`;
+            return `$${v.toFixed(0)}`;
+        };
+
+        if (longEl) longEl.textContent = formatM(longSum);
+        if (shortEl) shortEl.textContent = formatM(shortSum);
+        if (longPctEl) longPctEl.textContent = total > 0 ? `${((longSum / total) * 100).toFixed(1)}%` : '0%';
+        if (shortPctEl) shortPctEl.textContent = total > 0 ? `${((shortSum / total) * 100).toFixed(1)}%` : '0%';
+    }
+
+    function connectLiquidationsWs() {
+        if (wsConnection && (wsConnection.readyState === WebSocket.OPEN || wsConnection.readyState === WebSocket.CONNECTING)) {
+            return;
+        }
+        
+        updateWsStatus('reconnecting');
+        
+        try {
+            wsConnection = new WebSocket('wss://fstream.binance.com/ws/!forceOrder@arr');
+        } catch (e) {
+            console.error('WS creation failed:', e);
+            scheduleReconnect();
+            return;
+        }
+
+        wsConnection.onopen = () => {
+            wsIsAlive = true;
+            updateWsStatus('live');
+            if (wsReconnectTimer) {
+                clearTimeout(wsReconnectTimer);
+                wsReconnectTimer = null;
+            }
+        };
+
+        wsConnection.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg.e !== 'forceOrder' || !msg.o) return;
+                
+                const symbol = msg.o.s;
+                if (symbol !== 'BTCUSDT' && symbol !== 'ETHUSDT') return;
+                
+                const qty = parseFloat(msg.o.q);
+                const avgPrice = parseFloat(msg.o.ap);
+                if (isNaN(qty) || isNaN(avgPrice) || qty <= 0) return;
+                
+                const volumeUsd = qty * avgPrice;
+                
+                liqBuffer[symbol].push({
+                    t: msg.o.T || Date.now(),
+                    s: msg.o.S, // SELL = Long liq, BUY = Short liq
+                    v: volumeUsd
+                });
+                
+                // Ограничиваем размер буфера на всякий случай (защита от утечек памяти)
+                if (liqBuffer[symbol].length > 50000) {
+                    liqBuffer[symbol] = liqBuffer[symbol].slice(-40000);
+                }
+            } catch (e) {
+                console.warn('WS parse error:', e);
+            }
+        };
+
+        wsConnection.onerror = (e) => {
+            console.warn('WS error:', e);
+            wsIsAlive = false;
+        };
+
+        wsConnection.onclose = () => {
+            wsIsAlive = false;
+            updateWsStatus('reconnecting');
+            scheduleReconnect();
+        };
+    }
+
+    function scheduleReconnect() {
+        if (wsReconnectTimer) return;
+        wsReconnectTimer = setTimeout(() => {
+            wsReconnectTimer = null;
+            connectLiquidationsWs();
+        }, 5000);
     }
 
     document.querySelectorAll('.asset-switch').forEach(btn => {
@@ -886,7 +991,7 @@
             
             if (btn.dataset.liqAsset) {
                 currentLiqAsset = btn.dataset.liqAsset;
-                fetchLiquidations();
+                renderLiquidations();
             }
             tg.HapticFeedback.impactOccurred('light');
         });
@@ -980,12 +1085,12 @@
         fetchRates();
         fetchMempoolData();
         fetchGlobalMetrics(); 
-        fetchLiquidations(); // Загружаем реальные ликвидации при старте
+        connectLiquidationsWs(); // Запускаем WebSocket ликвидаций
 		
         setInterval(fetchRates, CACHE_TTL);
         setInterval(fetchMempoolData, 90000);
         setInterval(fetchGlobalMetrics, 120000); 
-        setInterval(fetchLiquidations, 30000); // Обновляем ликвидации каждые 30 сек
+        setInterval(renderLiquidations, 5000); // Перерисовка каждые 5 сек
 
         setTimeout(() => {
             topInput.value = "1";
@@ -1004,6 +1109,13 @@
                 topInputBox.classList.add('active-input-box');
                 bottomInputBox.classList.remove('active-input-box');
                 updateCalculator();
+            }
+        });
+
+        // Переподключение WS при возврате вкладки/приложения в фокус
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && !wsIsAlive) {
+                connectLiquidationsWs();
             }
         });
     }
