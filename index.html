@@ -83,7 +83,7 @@
                 <span class="status-badge text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono">кэш</span>
             </div>
             <div class="flex justify-between items-center px-1">
-                <span class="text-[11px] font-bold uppercase tracking-wider tg-hint">Активы</span>
+                <span class="text-[11px] font-bold uppercase tracking-wider tg-hint">Избранные активы</span>
                 <div class="flex items-center space-x-1.5 text-[10px] font-mono font-medium">
                     <span id="ethGasDisplay" class="text-purple-400/90">⛽ -- Gwei</span>
                     <span class="text-zinc-600">|</span>
@@ -116,7 +116,6 @@
                 <div class="flex justify-between items-start w-full">
                     <div class="flex flex-col flex-1 min-w-0">
                         <span id="topRoleLabel" class="text-xs tg-hint font-medium mb-1">Отдаю</span>
-                        <!-- ИСПРАВЛЕНО: добавлены readonly и inputmode="none" -->
                         <input type="text" id="topInput" value="1" readonly inputmode="none" class="w-full bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white min-w-0 cursor-default">
                     </div>
                     <div class="flex flex-col items-end shrink-0 ml-3">
@@ -138,7 +137,6 @@
                 <div class="flex justify-between items-start w-full">
                     <div class="flex flex-col flex-1 min-w-0">
                         <span id="bottomRoleLabel" class="text-xs tg-hint font-medium mb-1">Получаю</span>
-                        <!-- ИСПРАВЛЕНО: добавлены readonly и inputmode="none" -->
                         <input type="text" id="bottomInput" value="" readonly inputmode="none" class="w-full bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white min-w-0 cursor-default">
                     </div>
                     <div class="flex flex-col items-end shrink-0 ml-3">
@@ -199,7 +197,6 @@
                         <div id="gasHighPriorityFiat" class="text-[10px] text-gray-500 mt-0.5">$0</div>
                     </div>
                     <div class="bg-black/30 py-2.5 px-1 rounded-xl">
-                        <!-- ИСПРАВЛЕНО: переименовано с "Fastest" на "Economy" для логической точности -->
                         <div class="text-gray-400 font-medium text-[11px]">Economy</div>
                         <div id="gasNoPriority" class="font-mono font-bold text-sm text-purple-400 mt-0.5">0</div>
                         <div id="gasNoPriorityFiat" class="text-[10px] text-gray-500 mt-0.5">$0</div>
@@ -240,13 +237,11 @@
             </div>
             <button id="calcProfitActionBtn" class="tg-primary-btn w-full py-4 rounded-3xl font-bold text-base shadow-lg active:scale-[0.97] transition-transform">Рассчитать прибыль</button>
             <div id="profitResult" class="min-h-[52px] rounded-2xl p-4 text-center font-mono text-sm flex items-center justify-center border border-transparent"></div>
+            
             <div class="bg-black/30 rounded-3xl p-4 border border-gray-800 -mt-2">
-                <div class="flex justify-between mb-3">
-                    <span class="text-xs font-bold uppercase tracking-widest">Ликвидации (24h)</span>
-                    <div class="flex gap-1">
-                        <button data-liq-period="24" class="liq-switch-btn period-switch active px-3 py-1 text-xs rounded-xl">24H</button>
-                        <button data-liq-period="48" class="liq-switch-btn period-switch px-3 py-1 text-xs rounded-xl">48H</button>
-                    </div>
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs font-bold uppercase tracking-widest">Недавние ликвидации (Live)</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-mono">Binance API</span>
                 </div>
                 <div class="flex gap-2 mb-4">
                     <button data-liq-asset="btc" class="liq-switch-btn asset-switch active flex-1 py-2 rounded-2xl text-sm font-bold">BTC</button>
@@ -254,15 +249,18 @@
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-3 text-center">
-                        <div class="text-emerald-400 text-xs font-bold">LONG</div>
-                        <div id="liqLongValue" class="text-2xl font-bold text-emerald-400 font-mono">$428M</div>
-                        <div id="liqLongPercent" class="text-emerald-500/70 text-xs">58.2%</div>
+                        <div class="text-emerald-400 text-xs font-bold">LONG (Продажи)</div>
+                        <div id="liqLongValue" class="text-2xl font-bold text-emerald-400 font-mono">Загрузка...</div>
+                        <div id="liqLongPercent" class="text-emerald-500/70 text-xs">0%</div>
                     </div>
                     <div class="bg-red-500/10 border border-red-500/30 rounded-2xl p-3 text-center">
-                        <div class="text-red-400 text-xs font-bold">SHORT</div>
-                        <div id="liqShortValue" class="text-2xl font-bold text-red-400 font-mono">$312M</div>
-                        <div id="liqShortPercent" class="text-red-500/70 text-xs">41.8%</div>
+                        <div class="text-red-400 text-xs font-bold">SHORT (Покупки)</div>
+                        <div id="liqShortValue" class="text-2xl font-bold text-red-400 font-mono">Загрузка...</div>
+                        <div id="liqShortPercent" class="text-red-500/70 text-xs">0%</div>
                     </div>
+                </div>
+                <div class="mt-3 text-[10px] text-gray-500 text-center leading-tight">
+                    * Сумма последних 500 принудительных закрытий. Не является финансовой рекомендацией.
                 </div>
             </div>
         </div>
@@ -323,6 +321,7 @@
     let ratesData = {};
     let currentActiveInput = topInput;
     let pinnedCoins = ['bitcoin', 'ethereum', 'binancecoin', 'solana'];
+    let currentLiqAsset = 'btc';
     
     const coinsMeta = {
         bitcoin: { symbol: 'BTC', name: 'Bitcoin', sparkline: [], change24h: 0 },
@@ -827,33 +826,68 @@
             : `Убыток: <span class="font-bold">-$${Math.abs(netProfit).toFixed(2)}</span>`;
     });
 
-    let currentLiqPeriod = 24;
-    let currentLiqAsset = 'btc';
+    // ==================== REAL LIQUIDATIONS ====================
+    async function fetchLiquidations() {
+        try {
+            const [btcRes, ethRes] = await Promise.all([
+                fetch('https://fapi.binance.com/fapi/v1/allForceOrders?symbol=BTCUSDT&limit=500'),
+                fetch('https://fapi.binance.com/fapi/v1/allForceOrders?symbol=ETHUSDT&limit=500')
+            ]);
+            
+            const btcData = await btcRes.json();
+            const ethData = await ethRes.json();
+            
+            let btcLong = 0, btcShort = 0;
+            let ethLong = 0, ethShort = 0;
+            
+            // Binance: SELL = Long liquidation (forced to sell), BUY = Short liquidation (forced to buy)
+            if (Array.isArray(btcData)) {
+                btcData.forEach(order => {
+                    const val = parseFloat(order.qty) * parseFloat(order.price);
+                    if (order.side === 'SELL') btcLong += val;
+                    else if (order.side === 'BUY') btcShort += val;
+                });
+            }
+            
+            if (Array.isArray(ethData)) {
+                ethData.forEach(order => {
+                    const val = parseFloat(order.qty) * parseFloat(order.price);
+                    if (order.side === 'SELL') ethLong += val;
+                    else if (order.side === 'BUY') ethShort += val;
+                });
+            }
+            
+            const isBtc = currentLiqAsset === 'btc';
+            const longVal = isBtc ? btcLong : ethLong;
+            const shortVal = isBtc ? btcShort : ethShort;
+            const total = longVal + shortVal;
+            
+            const longEl = document.getElementById('liqLongValue');
+            const shortEl = document.getElementById('liqShortValue');
+            const longPctEl = document.getElementById('liqLongPercent');
+            const shortPctEl = document.getElementById('liqShortPercent');
 
-    function updateLiquidationMap() {
-        const base = currentLiqAsset === 'btc' ? { long: 428, short: 312 } : { long: 215, short: 287 };
-        const mult = currentLiqPeriod === 48 ? 1.85 : 1;
-        
-        const long = Math.round(base.long * mult);
-        const short = Math.round(base.short * mult);
-        const total = long + short;
-
-        document.getElementById('liqLongValue').textContent = `$${long}M`;
-        document.getElementById('liqShortValue').textContent = `$${short}M`;
-        document.getElementById('liqLongPercent').textContent = `${(long/total*100).toFixed(1)}%`;
-        document.getElementById('liqShortPercent').textContent = `${(short/total*100).toFixed(1)}%`;
+            if (longEl) longEl.textContent = total > 0 ? `$${(longVal / 1000000).toFixed(1)}M` : '$0M';
+            if (shortEl) shortEl.textContent = total > 0 ? `$${(shortVal / 1000000).toFixed(1)}M` : '$0M';
+            if (longPctEl) longPctEl.textContent = total > 0 ? `${((longVal / total) * 100).toFixed(1)}%` : '0%';
+            if (shortPctEl) shortPctEl.textContent = total > 0 ? `${((shortVal / total) * 100).toFixed(1)}%` : '0%';
+            
+        } catch (e) {
+            console.error('Liquidation fetch error:', e);
+            document.getElementById('liqLongValue').textContent = 'NetErr';
+            document.getElementById('liqShortValue').textContent = 'NetErr';
+        }
     }
 
-    document.querySelectorAll('.period-switch, .asset-switch').forEach(btn => {
+    document.querySelectorAll('.asset-switch').forEach(btn => {
         btn.addEventListener('click', () => {
-            const parentGroup = btn.classList.contains('period-switch') ? '.period-switch' : '.asset-switch';
-            document.querySelectorAll(parentGroup).forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.asset-switch').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             
-            if (btn.dataset.liqPeriod) currentLiqPeriod = parseInt(btn.dataset.liqPeriod);
-            if (btn.dataset.liqAsset) currentLiqAsset = btn.dataset.liqAsset;
-            
-            updateLiquidationMap();
+            if (btn.dataset.liqAsset) {
+                currentLiqAsset = btn.dataset.liqAsset;
+                fetchLiquidations();
+            }
             tg.HapticFeedback.impactOccurred('light');
         });
     });
@@ -872,12 +906,6 @@
             const btcPrice = ratesData.bitcoin?.usd || 65000;
             const satToUsd = (btcPrice / 100000000) * 140;
 
-            // ИСПРАВЛЕНО: корректный маппинг API mempool.space
-            // hourFee (~60 мин) -> Low
-            // halfHourFee (~30 мин) -> Medium
-            // fastestFee (~10 мин) -> High
-            // economyFee/minimumFee -> Economy
-            
             document.getElementById('gasLowPriority').textContent = fees.hourFee;
             document.getElementById('gasMedPriority').textContent = fees.halfHourFee;
             document.getElementById('gasHighPriority').textContent = fees.fastestFee;
@@ -952,10 +980,12 @@
         fetchRates();
         fetchMempoolData();
         fetchGlobalMetrics(); 
+        fetchLiquidations(); // Загружаем реальные ликвидации при старте
 		
         setInterval(fetchRates, CACHE_TTL);
         setInterval(fetchMempoolData, 90000);
         setInterval(fetchGlobalMetrics, 120000); 
+        setInterval(fetchLiquidations, 30000); // Обновляем ликвидации каждые 30 сек
 
         setTimeout(() => {
             topInput.value = "1";
