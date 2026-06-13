@@ -352,8 +352,8 @@
             uah: { symbol: 'UAH', name: 'Ukrainian Hryvnia', isFiat: true }
         };
 
-        const CACHE_KEY = 'twa_terminal_rates_v9';
-        const META_CACHE_KEY = 'twa_terminal_meta_v9';
+        const CACHE_KEY = 'twa_terminal_rates_v10';
+        const META_CACHE_KEY = 'twa_terminal_meta_v10';
         const CACHE_TTL = 45000;
 
         if (localStorage.getItem(META_CACHE_KEY)) {
@@ -485,7 +485,7 @@
             });
         }
 
-        // ==================== DRAG & DROP (Event Delegation - NO MEMORY LEAKS) ====================
+        // ==================== DRAG & DROP (Event Delegation) ====================
         let draggedCard = null;
 
         pinsContainer.addEventListener('dragstart', (e) => {
@@ -881,7 +881,7 @@
             });
         });
 
-        // ==================== MEMPOOL & GAS (FIXED) ====================
+        // ==================== MEMPOOL & GAS (FIXED & VALIDATED) ====================
         async function fetchMempoolData() {
             try {
                 const [feeRes, diffRes] = await Promise.all([
@@ -912,40 +912,50 @@
         }
         
         async function fetchEthGas() {
-            // 1. Попытка получить данные через надежный, CORS-friendly API без ключей (Beaconcha.in GasNow)
-            try {
-                const res = await fetch('https://beaconcha.in/api/v1/execution/gasnow', { signal: AbortSignal.timeout(3000) });
-                const data = await res.json();
-                if (data.code === 200 && data.data) {
-                    const gwei = Math.round(data.data.standard / 1e9);
-                    document.getElementById('ethGasDisplay').textContent = `⛽ ${gwei} Gwei`;
-                    return;
+            // Используем стабильные публичные RPC с жестким таймаутом
+            const rpcs = [
+                'https://eth.llamarpc.com',
+                'https://cloudflare-eth.com',
+                'https://rpc.ankr.com/eth'
+            ];
+
+            for (const rpc of rpcs) {
+                try {
+                    const res = await fetch(rpc, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_gasPrice', params: [], id: 1 }),
+                        signal: AbortSignal.timeout(3000)
+                    });
+                    const data = await res.json();
+                    
+                    if (data && data.result) {
+                        // Конвертация Wei (hex) в Gwei
+                        const wei = parseInt(data.result, 16);
+                        const gwei = Math.round(wei / 1e9);
+                        
+                        // СТРОГАЯ ВАЛИДАЦИЯ: Mainnet ETH gas редко бывает < 5 или > 500 в нормальных условиях.
+                        // Если мы видим 0.273, это тестнет или баг парсинга. Отбрасываем.
+                        if (gwei >= 5 && gwei <= 500) {
+                            document.getElementById('ethGasDisplay').textContent = `⛽ ${gwei} Gwei`;
+                            localStorage.setItem('last_known_gwei', gwei);
+                            return; // Успех, выходим из цикла
+                        } else {
+                            console.warn(`RPC ${rpc} вернул подозрительный Gwei: ${gwei}. Игнорируем.`);
+                        }
+                    }
+                } catch (e) {
+                    console.warn(`RPC ${rpc} failed:`, e.message);
                 }
-            } catch (e) { 
-                console.warn('Beaconcha gas API failed, trying fallback', e); 
             }
 
-            // 2. Fallback на публичный RPC со строгим таймаутом
-            const rpc = 'https://eth.llamarpc.com';
-            try {
-                const res = await fetch(rpc, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_gasPrice', params: [], id: 1 }),
-                    signal: AbortSignal.timeout(2500)
-                });
-                const data = await res.json();
-                if (data.result) {
-                    const gwei = Math.round(parseInt(data.result, 16) / 1e9);
-                    document.getElementById('ethGasDisplay').textContent = `⛽ ${gwei} Gwei`;
-                    return;
-                }
-            } catch (e) { 
-                console.warn('RPC gas fallback failed', e); 
+            // Если все RPC вернули мусор или упали, показываем последнее известное значение или честное "Нет данных"
+            const savedGas = localStorage.getItem('last_known_gwei');
+            if (savedGas) {
+                document.getElementById('ethGasDisplay').textContent = `⛽ ~${savedGas} Gwei (кэш)`;
+            } else {
+                document.getElementById('ethGasDisplay').textContent = `⛽ Нет данных`;
             }
-
-            // 3. Ultimate Fallback: не показываем ошибку, показываем безопасное среднее значение, чтобы не бесить пользователя
-            document.getElementById('ethGasDisplay').textContent = `⛽ ~25 Gwei`;
         }
 
         async function fetchGlobalMetrics() {
