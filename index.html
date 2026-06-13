@@ -12,7 +12,6 @@
             color: var(--tg-theme-text-color, #f5f5f5);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             overflow: hidden;
-            -webkit-tap-highlight-color: transparent;
         }
         .tg-primary-btn {
             background-color: var(--tg-theme-button-color, #2481cc);
@@ -32,9 +31,8 @@
         .pin-card {
             transition: transform 0.15s ease, opacity 0.15s ease;
             touch-action: pan-x;
-            will-change: transform, opacity;
         }
-        .pin-card.dragging {
+        .dragging {
             opacity: 0.4;
             transform: scale(1.03);
         }
@@ -55,7 +53,6 @@
         .marquee-content {
             display: flex;
             animation: marquee 30s linear infinite;
-            will-change: transform;
         }
         .marquee-content:hover {
             animation-play-state: paused;
@@ -85,16 +82,18 @@
                 <span class="text-[11px] font-bold uppercase tracking-wider tg-hint">Котировки</span>
                 <span class="status-badge text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono">кэш</span>
             </div>
+            
             <div class="flex justify-between items-center px-1">
                 <span class="text-[11px] font-bold uppercase tracking-wider tg-hint">Избранные активы</span>
                 <div class="flex items-center space-x-1.5 text-[10px] font-mono font-medium">
-                    <span id="ethGasDisplay" class="text-purple-400/90">⛽ -- Gwei</span>
+                    <span id="ethGasDisplay" class="text-purple-400/90 font-mono">⛽ -- Gwei</span>
                     <span class="text-zinc-600">|</span>
-                    <span id="fngDisplay" class="text-amber-400/90">⚖️ F&G: --</span>
+                    <span id="fngDisplay" class="text-amber-400/90 font-mono">⚖️ F&G: --</span>
                     <span class="text-zinc-600">|</span>
                     <span class="status-badge text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono">кэш</span>
                 </div>
             </div>
+            
             <div class="flex items-center space-x-2">
                 <button id="toggleSearchBtn" class="tg-primary-btn h-[58px] w-11 rounded-2xl flex items-center justify-center shrink-0 font-bold text-2xl active:scale-95 transition-transform shadow-md">+</button>
                 <div id="pinsContainer" class="flex items-center space-x-2 overflow-x-auto py-1 no-scrollbar flex-1 min-h-[64px] touch-pan-x pt-2"></div>
@@ -104,7 +103,7 @@
         <div id="searchPanel" class="hidden tg-secondary-bg p-3 rounded-2xl border border-gray-700/50 flex flex-col space-y-2">
             <div class="flex items-center space-x-2">
                 <input type="text" id="coinSearchInput" placeholder="BTC, SOL, PEPE, TON..." 
-                       class="flex-1 bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-white" inputmode="text">
+                       class="flex-1 bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-white">
                 <button id="executeSearchBtn" class="tg-primary-btn px-6 py-3 rounded-2xl font-semibold">Найти</button>
             </div>
             <span id="searchStatus" class="text-[11px] px-2 min-h-[20px]"></span>
@@ -121,7 +120,7 @@
                     <div class="flex flex-col flex-1 min-w-0">
                         <span id="topRoleLabel" class="text-xs tg-hint font-medium mb-1">Отдаю</span>
                         <input type="text" id="topInput" value="1" 
-                               class="w-full bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white min-w-0" inputmode="decimal">
+                               class="w-full bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white min-w-0">
                     </div>
                     <div class="flex flex-col items-end shrink-0 ml-3">
                         <span id="topNameLabel" class="font-semibold text-white text-xs mb-1.5 truncate max-w-[110px]">Bitcoin</span>
@@ -143,7 +142,7 @@
                     <div class="flex flex-col flex-1 min-w-0">
                         <span id="bottomRoleLabel" class="text-xs tg-hint font-medium mb-1">Получаю</span>
                         <input type="text" id="bottomInput" value="" 
-                               class="w-full bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white min-w-0" inputmode="decimal">
+                               class="w-full bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white min-w-0">
                     </div>
                     <div class="flex flex-col items-end shrink-0 ml-3">
                         <span id="bottomNameLabel" class="font-semibold text-white text-xs mb-1.5 truncate max-w-[110px]">US Dollar</span>
@@ -158,28 +157,28 @@
             </div>
 
             <div class="grid grid-cols-4 gap-2 px-1">
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="7">7</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="8">8</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="9">9</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="7">7</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="8">8</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="9">9</button>
                 <button class="numpad-btn bg-orange-500/10 hover:bg-orange-500/20 active:bg-orange-500/30 text-orange-400 text-xl font-bold py-4 rounded-2xl" data-action="clear">C</button>
                 
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="4">4</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="5">5</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="6">6</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="4">4</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="5">5</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="6">6</button>
                 <button class="numpad-btn bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 text-blue-400 text-xl font-bold py-4 rounded-2xl" data-action="/">÷</button>
                 
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="1">1</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="2">2</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="3">3</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="1">1</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="2">2</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="3">3</button>
                 <button class="numpad-btn bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 text-blue-400 text-xl font-bold py-4 rounded-2xl" data-action="*">×</button>
                 
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="0">0</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="dot">.</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="0">0</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="dot">.</button>
                 <button class="numpad-btn bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 text-blue-400 text-xl font-bold py-4 rounded-2xl" data-action="-">-</button>
                 <button class="numpad-btn bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 text-blue-400 text-xl font-bold py-4 rounded-2xl" data-action="+">+</button>
 
-                <button class="numpad-btn bg-zinc-700/70 hover:bg-zinc-600 active:bg-zinc-500 text-xl py-4 rounded-2xl col-span-2" data-action="backspace">⌫</button>
-                <button class="numpad-btn bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-500 text-xl font-bold py-4 rounded-2xl col-span-2 shadow-inner" data-action="equal">=</button>
+                <button class="numpad-btn bg-zinc-700/70 hover:bg-zinc-600 active:bg-zinc-500 text-xl py-4 rounded-2xl col-span-2 text-white" data-action="backspace">⌫</button>
+                <button class="numpad-btn bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-500 text-xl font-bold py-4 rounded-2xl col-span-2 shadow-inner text-white" data-action="equal">=</button>
             </div>
 
             <div class="tg-secondary-bg p-4 rounded-3xl border border-gray-700/30">
@@ -226,33 +225,33 @@
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="text-xs tg-hint block mb-1 pl-1">Текущая цена ($)</label>
-                    <input type="number" id="profitCoinPrice" step="any" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white" inputmode="decimal">
+                    <input type="number" id="profitCoinPrice" step="any" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white">
                 </div>
                 <div>
                     <label class="text-xs tg-hint block mb-1 pl-1">Инвестиция ($)</label>
-                    <input type="number" id="profitInvestment" value="100" step="any" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white" inputmode="decimal">
+                    <input type="number" id="profitInvestment" value="100" step="any" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white">
                 </div>
             </div>
 
             <div>
                 <label class="text-xs tg-hint block mb-1 pl-1">Целевая цена ($)</label>
-                <input type="number" id="profitTargetPrice" step="any" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white" inputmode="decimal">
+                <input type="number" id="profitTargetPrice" step="any" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white">
             </div>
 
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="text-xs tg-hint block mb-1 pl-1">Комиссия покупки (%)</label>
-                    <input type="number" id="profitBuyingFee" value="0.1" step="0.01" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white" inputmode="decimal">
+                    <input type="number" id="profitBuyingFee" value="0.1" step="0.01" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white">
                 </div>
                 <div>
                     <label class="text-xs tg-hint block mb-1 pl-1">Комиссия продажи (%)</label>
-                    <input type="number" id="profitSellingFee" value="0.1" step="0.01" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white" inputmode="decimal">
+                    <input type="number" id="profitSellingFee" value="0.1" step="0.01" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white">
                 </div>
             </div>
 
             <button id="calcProfitActionBtn" class="tg-primary-btn w-full py-4 rounded-3xl font-bold text-base shadow-lg active:scale-[0.97] transition-transform">Рассчитать прибыль</button>
             
-            <div id="profitResult" class="min-h-[52px] rounded-2xl p-4 text-center font-mono text-sm flex flex-col items-center justify-center border border-transparent"></div>
+            <div id="profitResult" class="min-h-[52px] rounded-2xl p-4 text-center font-mono text-sm flex items-center justify-center border border-transparent"></div>
 
             <div class="bg-black/30 rounded-3xl p-4 border border-gray-800 -mt-2">
                 <div class="flex justify-between mb-3">
@@ -293,7 +292,7 @@
             uk: { giving: "Віддаю", receiving: "Отримаю", cross_rate: "Крос-курс: " },
             en: { giving: "Giving", receiving: "Receiving", cross_rate: "Rate: " }
         };
-        const userLang = (tg.initDataUnsafe?.user?.language_code || 'ru').substring(0, 2);
+        const userLang = (tg.initDataUnsafe?.user?.language_code || 'en').substring(0, 2);
         const currentLang = i18n[userLang] ? userLang : 'ru';
 
         // ==================== DOM ====================
@@ -330,13 +329,13 @@
         const profitSellingFee = document.getElementById('profitSellingFee');
         const calcProfitActionBtn = document.getElementById('calcProfitActionBtn');
         const profitResult = document.getElementById('profitResult');
+
         const statusBadges = document.querySelectorAll('.status-badge');
 
         // ==================== STATE ====================
         let ratesData = {};
         let currentActiveInput = topInput;
         let pinnedCoins = ['bitcoin', 'ethereum', 'binancecoin', 'solana'];
-        let intervals = [];
         
         const coinsMeta = {
             bitcoin: { symbol: 'BTC', name: 'Bitcoin', sparkline: [], change24h: 0 },
@@ -352,8 +351,8 @@
             uah: { symbol: 'UAH', name: 'Ukrainian Hryvnia', isFiat: true }
         };
 
-        const CACHE_KEY = 'twa_terminal_rates_v10';
-        const META_CACHE_KEY = 'twa_terminal_meta_v10';
+        const CACHE_KEY = 'twa_terminal_rates_v8';
+        const META_CACHE_KEY = 'twa_terminal_meta_v8';
         const CACHE_TTL = 45000;
 
         if (localStorage.getItem(META_CACHE_KEY)) {
@@ -361,7 +360,7 @@
                 const saved = JSON.parse(localStorage.getItem(META_CACHE_KEY));
                 if (saved.pinnedCoins) pinnedCoins = saved.pinnedCoins;
                 Object.assign(coinsMeta, saved.coinsMeta || {});
-            } catch(e) { console.warn('Meta cache parse error', e); }
+            } catch(e) {}
         }
 
         // ==================== HELPERS ====================
@@ -369,7 +368,9 @@
         const isFiat = (id) => !!fiatMeta[id];
 
         function setStatusText(text) {
-            statusBadges.forEach(badge => { badge.textContent = text; });
+            statusBadges.forEach(badge => {
+                badge.textContent = text;
+            });
         }
 
         function syncSelectOptions() {
@@ -381,7 +382,7 @@
             profitCoinSelect.innerHTML = '';
 
             pinnedCoins.forEach(id => {
-                const meta = coinsMeta[id] || { symbol: id.toUpperCase(), name: id };
+                const meta = coinsMeta[id] || { symbol: id.toUpperCase() };
                 topSelect.appendChild(new Option(meta.symbol, id));
                 bottomSelect.appendChild(new Option(meta.symbol, id));
                 profitCoinSelect.appendChild(new Option(meta.name || meta.symbol, id));
@@ -453,13 +454,14 @@
                 card.innerHTML = `
                     <div>
                         <div class="text-xs font-bold">${meta.symbol}</div>
-                        <div class="text-[10px] font-mono ${colorClass}">${price ? '$' + price.toLocaleString('en-US', {maximumFractionDigits: 6}) : '—'}</div>
+                        <div class="text-[10px] font-mono ${colorClass}">${price ? '$' + price.toLocaleString('en-US', {maximumFractionDigits: 4}) : '—'}</div>
                     </div>
                     <div class="bg-black/40 rounded-lg p-1">${generateSparklineSVG(meta.sparkline)}</div>
                     <button class="delete-pin-btn absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 hover:bg-red-600 text-white text-[9px] flex items-center justify-center rounded-full shadow-md border border-zinc-900" data-id="${id}">✕</button>
                 `;
                 pinsContainer.appendChild(card);
             });
+            initDragAndDrop();
             attachDeleteListeners();
         }
 
@@ -468,10 +470,7 @@
                 btn.onclick = (e) => {
                     e.stopImmediatePropagation();
                     const id = btn.dataset.id;
-                    if (pinnedCoins.length <= 2) {
-                        tg.HapticFeedback.notificationOccurred('warning');
-                        return;
-                    }
+                    if (pinnedCoins.length <= 2) return;
                     
                     pinnedCoins = pinnedCoins.filter(x => x !== id);
                     delete coinsMeta[id];
@@ -485,35 +484,28 @@
             });
         }
 
-        // ==================== DRAG & DROP (Event Delegation) ====================
-        let draggedCard = null;
+        function initDragAndDrop() {
+            let dragged = null;
+            document.querySelectorAll('.pin-card').forEach(card => {
+                card.addEventListener('dragstart', () => {
+                    dragged = card;
+                    setTimeout(() => card.style.opacity = '0.4', 0);
+                });
+                card.addEventListener('dragend', () => {
+                    card.style.opacity = '1';
+                    pinnedCoins = Array.from(pinsContainer.children).map(el => el.dataset.id);
+                    localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
+                    syncSelectOptions();
+                });
+            }); 
 
-        pinsContainer.addEventListener('dragstart', (e) => {
-            const card = e.target.closest('.pin-card');
-            if (!card) return;
-            draggedCard = card;
-            setTimeout(() => card.classList.add('dragging'), 0);
-        });
-
-        pinsContainer.addEventListener('dragend', (e) => {
-            const card = e.target.closest('.pin-card');
-            if (!card) return;
-            card.classList.remove('dragging');
-            pinnedCoins = Array.from(pinsContainer.children).map(el => el.dataset.id);
-            localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
-            syncSelectOptions();
-        });
-
-        pinsContainer.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            if (!draggedCard) return;
-            const afterElement = getDragAfterElement(pinsContainer, e.clientX);
-            if (afterElement == null) {
-                pinsContainer.appendChild(draggedCard);
-            } else {
-                pinsContainer.insertBefore(draggedCard, afterElement);
-            }
-        });
+            pinsContainer.addEventListener('dragover', e => {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(pinsContainer, e.clientX);
+                if (afterElement == null) pinsContainer.appendChild(dragged);
+                else pinsContainer.insertBefore(dragged, afterElement);
+            });
+        }
 
         function getDragAfterElement(container, x) {
             const draggableElements = [...container.querySelectorAll('.pin-card:not(.dragging)')];
@@ -525,14 +517,13 @@
             }, { offset: Number.NEGATIVE_INFINITY }).element;
         }
 
-        // ==================== API & DATA ====================
         async function fetchWithFallback(url) {
             try {
-                const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+                const res = await fetch(url);
                 if (res.ok) return await res.json();
             } catch {}
             try {
-                const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, { signal: AbortSignal.timeout(5000) });
+                const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
                 if (res.ok) return await res.json();
             } catch {}
             return null;
@@ -568,6 +559,7 @@
                                 rub: data[id].rub,
                                 uah: data[id].uah
                             };
+                            
                             if (coinsMeta[id] && data[id].usd_24h_change !== undefined) {
                                 coinsMeta[id].change24h = data[id].usd_24h_change;
                             }
@@ -580,7 +572,7 @@
                     setStatusText('live');
                 }
             } catch (e) {
-                console.error('Rate fetch error', e);
+                console.error(e);
                 if (cached) {
                     ratesData = JSON.parse(cached);
                     setStatusText('offline');
@@ -627,11 +619,10 @@
 
         function formatValue(value, isAssetFiat) {
             if (value === 0) return '0';
-            if (isAssetFiat) {
-                return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            } else {
-                return value.toLocaleString('en-US', { maximumSignificantDigits: 6 });
-            }
+            let fixed = value.toFixed(isAssetFiat ? 2 : 6);
+            if (isAssetFiat && parseFloat(fixed) === 0 && value > 0) fixed = value.toFixed(4);
+            if (!isAssetFiat) fixed = fixed.replace(/0+$/, '').replace(/\.$/, '');
+            return fixed;
         }
 
         function updateCalculator() {
@@ -832,22 +823,19 @@
 
             if (!price || !investment || !targetPrice || price <= 0 || investment <= 0) {
                 profitResult.innerHTML = `<span class="text-red-400">Введите корректные данные</span>`;
-                profitResult.className = `min-h-[52px] rounded-2xl p-4 text-center font-mono text-sm flex flex-col items-center justify-center border border-red-500/30 bg-red-500/10 text-red-400`;
                 return;
             }
 
-            const coinsBought = (investment / price) * (1 - buyFee/100);
+            const coinsBought = investment / price * (1 - buyFee/100);
             const grossSell = coinsBought * targetPrice;
             const sellFeeAmount = grossSell * (sellFee / 100);
             const netProfit = grossSell - sellFeeAmount - investment;
-            const roi = ((netProfit / investment) * 100).toFixed(2);
 
             const isProfit = netProfit > 0;
-            profitResult.className = `min-h-[52px] rounded-2xl p-4 text-center font-mono text-sm flex flex-col items-center justify-center border ${isProfit ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`;
-            
+            profitResult.className = `min-h-[52px] rounded-2xl p-4 text-center font-mono text-sm border ${isProfit ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`;
             profitResult.innerHTML = isProfit 
-                ? `<div class="font-bold text-lg">+$${netProfit.toFixed(2)}</div><div class="text-xs opacity-80">ROI: +${roi}%</div>` 
-                : `<div class="font-bold text-lg">-$${Math.abs(netProfit).toFixed(2)}</div><div class="text-xs opacity-80">ROI: ${roi}%</div>`;
+                ? `Прибыль: <span class="font-bold">+$${netProfit.toFixed(2)}</span>` 
+                : `Убыток: <span class="font-bold">-$${Math.abs(netProfit).toFixed(2)}</span>`;
         });
 
         let currentLiqPeriod = 24;
@@ -881,12 +869,12 @@
             });
         });
 
-        // ==================== MEMPOOL & GAS (FIXED & VALIDATED) ====================
+        // ==================== MEMPOOL ====================
         async function fetchMempoolData() {
             try {
                 const [feeRes, diffRes] = await Promise.all([
-                    fetch('https://mempool.space/api/v1/fees/recommended', { signal: AbortSignal.timeout(4000) }),
-                    fetch('https://mempool.space/api/v1/difficulty-adjustment', { signal: AbortSignal.timeout(4000) })
+                    fetch('https://mempool.space/api/v1/fees/recommended'),
+                    fetch('https://mempool.space/api/v1/difficulty-adjustment')
                 ]);
 
                 const fees = await feeRes.json();
@@ -905,107 +893,117 @@
                 document.getElementById('gasHighPriorityFiat').textContent = '$' + (fees.fastestFee * satToUsd).toFixed(2);
                 document.getElementById('gasNoPriorityFiat').textContent = '$' + ((fees.economyFee || 12) * satToUsd).toFixed(2);
 
-                document.getElementById('mempoolUnconfirmed').innerHTML = `${diff.remainingBlocks || '?'} бл. до халвинга`;
+                // Исправлено: API возвращает данные до следующего ретаргета сложности, а не до халвинга
+                document.getElementById('mempoolUnconfirmed').innerHTML = `${diff.remainingBlocks || '?'} бл. до ретаргета`;
             } catch (e) {
-                console.warn('Mempool data unavailable', e);
+                console.warn('Mempool data unavailable');
             }
         }
         
-        async function fetchEthGas() {
-            // Используем стабильные публичные RPC с жестким таймаутом
-            const rpcs = [
-                'https://eth.llamarpc.com',
-                'https://cloudflare-eth.com',
-                'https://rpc.ankr.com/eth'
-            ];
-
-            for (const rpc of rpcs) {
-                try {
-                    const res = await fetch(rpc, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_gasPrice', params: [], id: 1 }),
-                        signal: AbortSignal.timeout(3000)
-                    });
-                    const data = await res.json();
-                    
+        // ==================== GLOBAL METRICS (GWEI & F&G) ====================
+        async function fetchGlobalMetrics() {
+            // 1. Fetch ETH Gas Price (Gwei)
+            let gasLoaded = false;
+            try {
+                // Используем надежный, CORS-дружественный публичный RPC
+                const rpcUrl = 'https://ethereum.publicnode.com';
+                const response = await fetch(rpcUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_gasPrice', params: [], id: 1 })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
                     if (data && data.result) {
-                        // Конвертация Wei (hex) в Gwei
-                        const wei = parseInt(data.result, 16);
-                        const gwei = Math.round(wei / 1e9);
-                        
-                        // СТРОГАЯ ВАЛИДАЦИЯ: Mainnet ETH gas редко бывает < 5 или > 500 в нормальных условиях.
-                        // Если мы видим 0.273, это тестнет или баг парсинга. Отбрасываем.
-                        if (gwei >= 5 && gwei <= 500) {
-                            document.getElementById('ethGasDisplay').textContent = `⛽ ${gwei} Gwei`;
-                            localStorage.setItem('last_known_gwei', gwei);
-                            return; // Успех, выходим из цикла
-                        } else {
-                            console.warn(`RPC ${rpc} вернул подозрительный Gwei: ${gwei}. Игнорируем.`);
+                        const gwei = Math.round(parseInt(data.result, 16) / 1e9);
+                        const el = document.getElementById('ethGasDisplay');
+                        if (el) {
+                            el.textContent = `⛽ ${gwei} Gwei`;
+                            // Динамическая расцветка в зависимости от нагрузки сети
+                            if (gwei < 15) el.className = "text-emerald-400/90 font-mono";
+                            else if (gwei < 30) el.className = "text-amber-400/90 font-mono";
+                            else el.className = "text-red-400/90 font-mono";
                         }
+                        gasLoaded = true;
+                    }
+                }
+            } catch (e) {
+                console.error('Ошибка запроса газа (RPC):', e);
+            }
+
+            // Fallback API, если основной RPC недоступен или блокирует CORS
+            if (!gasLoaded) {
+                try {
+                    const res = await fetch('https://ethgas.watch/api/gas');
+                    const data = await res.json();
+                    if (data && data.standard) {
+                        const gwei = Math.round(data.standard);
+                        const el = document.getElementById('ethGasDisplay');
+                        if (el) {
+                            el.textContent = `⛽ ${gwei} Gwei`;
+                            if (gwei < 15) el.className = "text-emerald-400/90 font-mono";
+                            else if (gwei < 30) el.className = "text-amber-400/90 font-mono";
+                            else el.className = "text-red-400/90 font-mono";
+                        }
+                        gasLoaded = true;
                     }
                 } catch (e) {
-                    console.warn(`RPC ${rpc} failed:`, e.message);
+                    console.error('Ошибка запроса газа (Fallback API):', e);
                 }
             }
 
-            // Если все RPC вернули мусор или упали, показываем последнее известное значение или честное "Нет данных"
-            const savedGas = localStorage.getItem('last_known_gwei');
-            if (savedGas) {
-                document.getElementById('ethGasDisplay').textContent = `⛽ ~${savedGas} Gwei (кэш)`;
-            } else {
-                document.getElementById('ethGasDisplay').textContent = `⛽ Нет данных`;
+            if (!gasLoaded) {
+                const el = document.getElementById('ethGasDisplay');
+                if (el) {
+                    el.textContent = `⛽ -- Gwei`;
+                    el.className = "text-gray-500/90 font-mono";
+                }
             }
-        }
 
-        async function fetchGlobalMetrics() {
-            await fetchEthGas();
-
+            // 2. Fetch Fear & Greed Index
             try {
-                const fngResponse = await fetch('https://api.alternative.me/fng/?limit=1', { signal: AbortSignal.timeout(4000) });
+                const fngResponse = await fetch('https://api.alternative.me/fng/?limit=1');
                 const fngData = await fngResponse.json();
                 
                 if (fngData && fngData.data && fngData.data[0]) {
-                    const val = fngData.data[0].value;
+                    const val = parseInt(fngData.data[0].value);
+                    const classification = fngData.data[0].value_classification;
                     const el = document.getElementById('fngDisplay');
-                    if (el) el.textContent = `⚖️ F&G: ${val}`;
+                    
+                    if (el) {
+                        el.textContent = `⚖️ F&G: ${val} (${classification})`;
+                        
+                        // Динамическая расцветка индекса
+                        if (val <= 25) el.className = "text-red-400/90 font-mono"; // Extreme Fear
+                        else if (val <= 45) el.className = "text-orange-400/90 font-mono"; // Fear
+                        else if (val <= 55) el.className = "text-yellow-400/90 font-mono"; // Neutral
+                        else if (val <= 75) el.className = "text-emerald-400/90 font-mono"; // Greed
+                        else el.className = "text-green-400/90 font-mono"; // Extreme Greed
+                    }
+                } else {
+                    throw new Error('Неверная структура ответа F&G');
                 }
             } catch (e) {
-                console.error('F&G fetch error', e);
+                console.error('Ошибка получения индекса Fear & Greed:', e);
                 const el = document.getElementById('fngDisplay');
-                if (el) el.textContent = `⚖️ F&G: --`;
+                if (el) {
+                    el.textContent = `⚖️ F&G: --`;
+                    el.className = "text-gray-500/90 font-mono";
+                }
             }
         }
         
-        // ==================== LIFECYCLE & INIT ====================
-        function clearAllIntervals() {
-            intervals.forEach(clearInterval);
-            intervals = [];
-        }
-
-        function startIntervals() {
-            clearAllIntervals();
-            intervals.push(setInterval(fetchRates, CACHE_TTL));
-            intervals.push(setInterval(fetchMempoolData, 90000));
-            intervals.push(setInterval(fetchGlobalMetrics, 120000)); 
-        }
-
+        // ==================== INIT ====================
         function init() {
             syncSelectOptions();
             fetchRates();
             fetchMempoolData();
             fetchGlobalMetrics(); 
-            startIntervals();
-
-            // Экономия батареи и API-лимитов: пауза при сворачивании TWA
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    clearAllIntervals();
-                } else {
-                    fetchRates(); // Сразу обновляем при возврате
-                    startIntervals();
-                }
-            });
+            
+            setInterval(fetchRates, CACHE_TTL);
+            setInterval(fetchMempoolData, 90000);
+            setInterval(fetchGlobalMetrics, 120000); 
 
             setTimeout(() => {
                 topInput.value = "1";
