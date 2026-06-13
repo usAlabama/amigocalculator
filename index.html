@@ -837,13 +837,21 @@
     });
 
     // ==================== REAL LIQUIDATIONS (WebSocket Binance Futures) ====================
-    // Буфер хранит все ликвидации за последние 24 часа
-    // Структура: { BTCUSDT: [{t: timestamp, s: 'SELL'|'BUY', v: volume_usd}], ETHUSDT: [...] }
     const liqBuffer = { BTCUSDT: [], ETHUSDT: [] };
-    const LIQ_RETENTION_MS = 24 * 60 * 60 * 1000; // 24 часа
+    const LIQ_RETENTION_MS = 24 * 60 * 60 * 1000;
     let wsConnection = null;
     let wsReconnectTimer = null;
     let wsIsAlive = false;
+    let wsRetryCount = 0;
+    const MAX_WS_RETRY = 5;
+
+    // Альтернативные WebSocket endpoints Binance (на случай блокировки основного)
+    const WS_ENDPOINTS = [
+        'wss://fstream.binance.com/ws/!forceOrder@arr',
+        'wss://fstream.binance.gg/ws/!forceOrder@arr',
+        'wss://fstream.binance.me/ws/!forceOrder@arr'
+    ];
+    let currentWsIndex = 0;
 
     function updateWsStatus(state) {
         const dot = document.getElementById('wsStatusDot');
@@ -857,7 +865,7 @@
         } else if (state === 'reconnecting') {
             dot.className = 'w-1.5 h-1.5 bg-amber-400 rounded-full ws-live-dot';
             badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-mono';
-            badge.textContent = 'reconnect...';
+            badge.textContent = `reconnect (${wsRetryCount}/${MAX_WS_RETRY})`;
         } else {
             dot.className = 'w-1.5 h-1.5 bg-zinc-600 rounded-full';
             badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-zinc-700 text-zinc-400 font-mono';
@@ -893,8 +901,8 @@
 
         let longSum = 0, shortSum = 0;
         data.forEach(item => {
-            if (item.s === 'SELL') longSum += item.v;   // Биржа продала → ликвидировали LONG
-            else if (item.s === 'BUY') shortSum += item.v; // Биржа купила → ликвидировали SHORT
+            if (item.s === 'SELL') longSum += item.v;
+            else if (item.s === 'BUY') shortSum += item.v;
         });
 
         const total = longSum + shortSum;
@@ -916,19 +924,33 @@
             return;
         }
         
+        if (wsRetryCount >= MAX_WS_RETRY) {
+            updateWsStatus('offline');
+            console.warn('Max WebSocket retries reached. Falling back to REST API.');
+            fetchLiquidationsFallback();
+            return;
+        }
+        
         updateWsStatus('reconnecting');
         
+        const wsUrl = WS_ENDPOINTS[currentWsIndex];
+        console.log(`Attempting WebSocket connection to: ${wsUrl}`);
+        
         try {
-            wsConnection = new WebSocket('wss://fstream.binance.com/ws/!forceOrder@arr');
+            wsConnection = new WebSocket(wsUrl);
         } catch (e) {
             console.error('WS creation failed:', e);
+            wsRetryCount++;
+            currentWsIndex = (currentWsIndex + 1) % WS_ENDPOINTS.length;
             scheduleReconnect();
             return;
         }
 
         wsConnection.onopen = () => {
             wsIsAlive = true;
+            wsRetryCount = 0;
             updateWsStatus('live');
+            console.log('WebSocket connected successfully');
             if (wsReconnectTimer) {
                 clearTimeout(wsReconnectTimer);
                 wsReconnectTimer = null;
@@ -951,11 +973,10 @@
                 
                 liqBuffer[symbol].push({
                     t: msg.o.T || Date.now(),
-                    s: msg.o.S, // SELL = Long liq, BUY = Short liq
+                    s: msg.o.S,
                     v: volumeUsd
                 });
                 
-                // Ограничиваем размер буфера на всякий случай (защита от утечек памяти)
                 if (liqBuffer[symbol].length > 50000) {
                     liqBuffer[symbol] = liqBuffer[symbol].slice(-40000);
                 }
@@ -965,12 +986,15 @@
         };
 
         wsConnection.onerror = (e) => {
-            console.warn('WS error:', e);
+            console.warn('WS error on', wsUrl, ':', e);
             wsIsAlive = false;
         };
 
         wsConnection.onclose = () => {
+            console.log('WebSocket closed. Trying next endpoint.');
             wsIsAlive = false;
+            wsRetryCount++;
+            currentWsIndex = (currentWsIndex + 1) % WS_ENDPOINTS.length;
             updateWsStatus('reconnecting');
             scheduleReconnect();
         };
@@ -981,7 +1005,41 @@
         wsReconnectTimer = setTimeout(() => {
             wsReconnectTimer = null;
             connectLiquidationsWs();
-        }, 5000);
+        }, 3000);
+    }
+
+    // Fallback: REST API для ликвидаций (если WebSocket полностью не работает)
+    async function fetchLiquidationsFallback() {
+        try {
+            const [btcRes, ethRes] = await Promise.all([
+                fetch('https://fapi.binance.com/fapi/v1/allForceOrders?symbol=BTCUSDT&limit=500'),
+                fetch('https://fapi.binance.com/fapi/v1/allForceOrders?symbol=ETHUSDT&limit=500')
+            ]);
+            
+            const btcData = await btcRes.json();
+            const ethData = await ethRes.json();
+            
+            const processOrders = (data, symbol) => {
+                if (!Array.isArray(data)) return;
+                data.forEach(order => {
+                    const qty = parseFloat(order.qty);
+                    const price = parseFloat(order.price);
+                    if (isNaN(qty) || isNaN(price)) return;
+                    liqBuffer[symbol].push({
+                        t: order.time || Date.now(),
+                        s: order.side,
+                        v: qty * price
+                    });
+                });
+            };
+            
+            processOrders(btcData, 'BTCUSDT');
+            processOrders(ethData, 'ETHUSDT');
+            
+            renderLiquidations();
+        } catch (e) {
+            console.error('Liquidations REST fallback failed:', e);
+        }
     }
 
     document.querySelectorAll('.asset-switch').forEach(btn => {
@@ -1027,12 +1085,15 @@
         }
     }
     
-    // ==================== GLOBAL METRICS ====================
+    // ==================== GLOBAL METRICS (ИСПРАВЛЕНО: CORS-friendly RPC) ====================
     async function fetchGlobalMetrics() {
+        // ИСПРАВЛЕНО: Убран eth.llamarpc.com (блокирует CORS), добавлены рабочие ноды
         const rpcEndpoints = [
-            'https://eth.llamarpc.com',
+            'https://ethereum.publicnode.com',
+            'https://1rpc.io/eth',
             'https://rpc.ankr.com/eth',
-            'https://eth.drpc.org'
+            'https://eth.drpc.org',
+            'https://cloudflare-eth.com'
         ];
         let gasLoaded = false;
         
@@ -1053,29 +1114,35 @@
                     const data = await res.json();
                     if (data?.result) {
                         const gwei = Math.round(parseInt(data.result, 16) / 1e9);
-                        document.getElementById('ethGasDisplay').textContent = `⛽ ${gwei} Gwei`;
+                        const el = document.getElementById('ethGasDisplay');
+                        if (el) el.textContent = `⛽ ${gwei} Gwei`;
                         gasLoaded = true;
                         break;
                     }
                 }
-            } catch (e) { /* continue to next RPC */ }
+            } catch (e) {
+                console.warn(`RPC ${rpc} failed, trying next...`);
+            }
         }
 
         if (!gasLoaded) {
-            document.getElementById('ethGasDisplay').textContent = `⛽ NetErr`;
+            const el = document.getElementById('ethGasDisplay');
+            if (el) el.textContent = `⛽ NetErr`;
         }
 
         try {
             const fngData = await fetchWithFallback('https://api.alternative.me/fng/?limit=1');
             if (fngData?.data?.[0]) {
                 const val = fngData.data[0].value;
-                document.getElementById('fngDisplay').textContent = `⚖️ F&G: ${val}`;
+                const el = document.getElementById('fngDisplay');
+                if (el) el.textContent = `⚖️ F&G: ${val}`;
             } else {
                 throw new Error('Invalid F&G structure');
             }
         } catch (e) {
             console.error('F&G fetch error:', e);
-            document.getElementById('fngDisplay').textContent = `⚖️ F&G: --`;
+            const el = document.getElementById('fngDisplay');
+            if (el) el.textContent = `⚖️ F&G: --`;
         }
     }
 	
@@ -1085,12 +1152,12 @@
         fetchRates();
         fetchMempoolData();
         fetchGlobalMetrics(); 
-        connectLiquidationsWs(); // Запускаем WebSocket ликвидаций
+        connectLiquidationsWs();
 		
         setInterval(fetchRates, CACHE_TTL);
         setInterval(fetchMempoolData, 90000);
         setInterval(fetchGlobalMetrics, 120000); 
-        setInterval(renderLiquidations, 5000); // Перерисовка каждые 5 сек
+        setInterval(renderLiquidations, 5000);
 
         setTimeout(() => {
             topInput.value = "1";
@@ -1112,9 +1179,9 @@
             }
         });
 
-        // Переподключение WS при возврате вкладки/приложения в фокус
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden && !wsIsAlive) {
+                wsRetryCount = 0;
                 connectLiquidationsWs();
             }
         });
