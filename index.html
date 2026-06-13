@@ -82,18 +82,16 @@
                 <span class="text-[11px] font-bold uppercase tracking-wider tg-hint">Котировки</span>
                 <span class="status-badge text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono">кэш</span>
             </div>
-            
             <div class="flex justify-between items-center px-1">
                 <span class="text-[11px] font-bold uppercase tracking-wider tg-hint">Избранные активы</span>
                 <div class="flex items-center space-x-1.5 text-[10px] font-mono font-medium">
-                    <span id="ethGasDisplay" class="text-purple-400/90 font-mono">⛽ -- Gwei</span>
+                    <span id="ethGasDisplay" class="text-purple-400/90">⛽ -- Gwei</span>
                     <span class="text-zinc-600">|</span>
-                    <span id="fngDisplay" class="text-amber-400/90 font-mono">⚖️ F&G: --</span>
+                    <span id="fngDisplay" class="text-amber-400/90">⚖️ F&G: --</span>
                     <span class="text-zinc-600">|</span>
                     <span class="status-badge text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono">кэш</span>
                 </div>
             </div>
-            
             <div class="flex items-center space-x-2">
                 <button id="toggleSearchBtn" class="tg-primary-btn h-[58px] w-11 rounded-2xl flex items-center justify-center shrink-0 font-bold text-2xl active:scale-95 transition-transform shadow-md">+</button>
                 <div id="pinsContainer" class="flex items-center space-x-2 overflow-x-auto py-1 no-scrollbar flex-1 min-h-[64px] touch-pan-x pt-2"></div>
@@ -102,8 +100,7 @@
 
         <div id="searchPanel" class="hidden tg-secondary-bg p-3 rounded-2xl border border-gray-700/50 flex flex-col space-y-2">
             <div class="flex items-center space-x-2">
-                <input type="text" id="coinSearchInput" placeholder="BTC, SOL, PEPE, TON..." 
-                       class="flex-1 bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-white">
+                <input type="text" id="coinSearchInput" placeholder="BTC, SOL, PEPE, TON..." class="flex-1 bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500">
                 <button id="executeSearchBtn" class="tg-primary-btn px-6 py-3 rounded-2xl font-semibold">Найти</button>
             </div>
             <span id="searchStatus" class="text-[11px] px-2 min-h-[20px]"></span>
@@ -119,8 +116,7 @@
                 <div class="flex justify-between items-start w-full">
                     <div class="flex flex-col flex-1 min-w-0">
                         <span id="topRoleLabel" class="text-xs tg-hint font-medium mb-1">Отдаю</span>
-                        <input type="text" id="topInput" value="1" 
-                               class="w-full bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white min-w-0">
+                        <input type="text" id="topInput" value="1" class="w-full bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white min-w-0">
                     </div>
                     <div class="flex flex-col items-end shrink-0 ml-3">
                         <span id="topNameLabel" class="font-semibold text-white text-xs mb-1.5 truncate max-w-[110px]">Bitcoin</span>
@@ -141,8 +137,7 @@
                 <div class="flex justify-between items-start w-full">
                     <div class="flex flex-col flex-1 min-w-0">
                         <span id="bottomRoleLabel" class="text-xs tg-hint font-medium mb-1">Получаю</span>
-                        <input type="text" id="bottomInput" value="" 
-                               class="w-full bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white min-w-0">
+                        <input type="text" id="bottomInput" value="" class="w-full bg-transparent text-3xl font-bold focus:outline-none border-0 p-0 text-white min-w-0">
                     </div>
                     <div class="flex flex-col items-end shrink-0 ml-3">
                         <span id="bottomNameLabel" class="font-semibold text-white text-xs mb-1.5 truncate max-w-[110px]">US Dollar</span>
@@ -157,28 +152,24 @@
             </div>
 
             <div class="grid grid-cols-4 gap-2 px-1">
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="7">7</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="8">8</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="9">9</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="7">7</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="8">8</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="9">9</button>
                 <button class="numpad-btn bg-orange-500/10 hover:bg-orange-500/20 active:bg-orange-500/30 text-orange-400 text-xl font-bold py-4 rounded-2xl" data-action="clear">C</button>
-                
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="4">4</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="5">5</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="6">6</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="4">4</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="5">5</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="6">6</button>
                 <button class="numpad-btn bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 text-blue-400 text-xl font-bold py-4 rounded-2xl" data-action="/">÷</button>
-                
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="1">1</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="2">2</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="3">3</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="1">1</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="2">2</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="3">3</button>
                 <button class="numpad-btn bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 text-blue-400 text-xl font-bold py-4 rounded-2xl" data-action="*">×</button>
-                
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="0">0</button>
-                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl text-white" data-action="dot">.</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action="0">0</button>
+                <button class="numpad-btn bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-xl font-semibold py-4 rounded-2xl" data-action=".">.</button>
                 <button class="numpad-btn bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 text-blue-400 text-xl font-bold py-4 rounded-2xl" data-action="-">-</button>
                 <button class="numpad-btn bg-blue-500/10 hover:bg-blue-500/20 active:bg-blue-500/30 text-blue-400 text-xl font-bold py-4 rounded-2xl" data-action="+">+</button>
-
-                <button class="numpad-btn bg-zinc-700/70 hover:bg-zinc-600 active:bg-zinc-500 text-xl py-4 rounded-2xl col-span-2 text-white" data-action="backspace">⌫</button>
-                <button class="numpad-btn bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-500 text-xl font-bold py-4 rounded-2xl col-span-2 shadow-inner text-white" data-action="equal">=</button>
+                <button class="numpad-btn bg-zinc-700/70 hover:bg-zinc-600 active:bg-zinc-500 text-xl py-4 rounded-2xl col-span-2" data-action="backspace">⌫</button>
+                <button class="numpad-btn bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-500 text-xl font-bold py-4 rounded-2xl col-span-2 shadow-inner" data-action="equal">=</button>
             </div>
 
             <div class="tg-secondary-bg p-4 rounded-3xl border border-gray-700/30">
@@ -216,12 +207,10 @@
 
         <div id="profitTabSection" class="hidden flex flex-col space-y-4 tg-secondary-bg p-5 rounded-3xl border border-gray-700/30">
             <h2 class="text-lg font-bold text-center">Калькулятор прибыли</h2>
-            
             <div>
                 <label class="text-xs tg-hint block mb-1 pl-1">Монета</label>
                 <select id="profitCoinSelect" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white"></select>
             </div>
-
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="text-xs tg-hint block mb-1 pl-1">Текущая цена ($)</label>
@@ -232,12 +221,10 @@
                     <input type="number" id="profitInvestment" value="100" step="any" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white">
                 </div>
             </div>
-
             <div>
                 <label class="text-xs tg-hint block mb-1 pl-1">Целевая цена ($)</label>
                 <input type="number" id="profitTargetPrice" step="any" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white">
             </div>
-
             <div class="grid grid-cols-2 gap-3">
                 <div>
                     <label class="text-xs tg-hint block mb-1 pl-1">Комиссия покупки (%)</label>
@@ -248,11 +235,8 @@
                     <input type="number" id="profitSellingFee" value="0.1" step="0.01" class="w-full bg-zinc-900 border border-gray-700 rounded-2xl px-4 py-3 text-sm text-white">
                 </div>
             </div>
-
             <button id="calcProfitActionBtn" class="tg-primary-btn w-full py-4 rounded-3xl font-bold text-base shadow-lg active:scale-[0.97] transition-transform">Рассчитать прибыль</button>
-            
             <div id="profitResult" class="min-h-[52px] rounded-2xl p-4 text-center font-mono text-sm flex items-center justify-center border border-transparent"></div>
-
             <div class="bg-black/30 rounded-3xl p-4 border border-gray-800 -mt-2">
                 <div class="flex justify-between mb-3">
                     <span class="text-xs font-bold uppercase tracking-widest">Ликвидации (24h)</span>
@@ -282,751 +266,712 @@
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
 
-        // ==================== i18n ====================
-        const i18n = {
-            ru: { giving: "Отдаю", receiving: "Получаю", cross_rate: "Кросс-курс: " },
-            uk: { giving: "Віддаю", receiving: "Отримаю", cross_rate: "Крос-курс: " },
-            en: { giving: "Giving", receiving: "Receiving", cross_rate: "Rate: " }
-        };
-        const userLang = (tg.initDataUnsafe?.user?.language_code || 'en').substring(0, 2);
-        const currentLang = i18n[userLang] ? userLang : 'ru';
+    // ==================== i18n ====================
+    const i18n = {
+        ru: { giving: "Отдаю", receiving: "Получаю", cross_rate: "Кросс-курс: " },
+        uk: { giving: "Віддаю", receiving: "Отримаю", cross_rate: "Крос-курс: " },
+        en: { giving: "Giving", receiving: "Receiving", cross_rate: "Rate: " }
+    };
+    const userLang = (tg.initDataUnsafe?.user?.language_code || 'ru').substring(0, 2);
+    const currentLang = i18n[userLang] ? userLang : 'ru';
 
-        // ==================== DOM ====================
-        const topInput = document.getElementById('topInput');
-        const bottomInput = document.getElementById('bottomInput');
-        const topSelect = document.getElementById('topSelect');
-        const bottomSelect = document.getElementById('bottomSelect');
-        const topInputBox = document.getElementById('topInputBox');
-        const bottomInputBox = document.getElementById('bottomInputBox');
-        const topRoleLabel = document.getElementById('topRoleLabel');
-        const bottomRoleLabel = document.getElementById('bottomRoleLabel');
-        const topNameLabel = document.getElementById('topNameLabel');
-        const bottomNameLabel = document.getElementById('bottomNameLabel');
-        const rateDisplay = document.getElementById('rateDisplay');
-        const swapBtn = document.getElementById('swapBtn');
-        const pinsContainer = document.getElementById('pinsContainer');
-        const toggleSearchBtn = document.getElementById('toggleSearchBtn');
-        const searchPanel = document.getElementById('searchPanel');
-        const coinSearchInput = document.getElementById('coinSearchInput');
-        const executeSearchBtn = document.getElementById('executeSearchBtn');
-        const searchStatus = document.getElementById('searchStatus');
-        const marqueeTicker = document.getElementById('marqueeTicker');
+    // ==================== DOM ====================
+    const topInput = document.getElementById('topInput');
+    const bottomInput = document.getElementById('bottomInput');
+    const topSelect = document.getElementById('topSelect');
+    const bottomSelect = document.getElementById('bottomSelect');
+    const topInputBox = document.getElementById('topInputBox');
+    const bottomInputBox = document.getElementById('bottomInputBox');
+    const topRoleLabel = document.getElementById('topRoleLabel');
+    const bottomRoleLabel = document.getElementById('bottomRoleLabel');
+    const topNameLabel = document.getElementById('topNameLabel');
+    const bottomNameLabel = document.getElementById('bottomNameLabel');
+    const rateDisplay = document.getElementById('rateDisplay');
+    const swapBtn = document.getElementById('swapBtn');
+    const pinsContainer = document.getElementById('pinsContainer');
+    const toggleSearchBtn = document.getElementById('toggleSearchBtn');
+    const searchPanel = document.getElementById('searchPanel');
+    const coinSearchInput = document.getElementById('coinSearchInput');
+    const executeSearchBtn = document.getElementById('executeSearchBtn');
+    const searchStatus = document.getElementById('searchStatus');
+    const marqueeTicker = document.getElementById('marqueeTicker');
 
-        const tabCalcBtn = document.getElementById('tabCalcBtn');
-        const tabProfitBtn = document.getElementById('tabProfitBtn');
-        const converterTabSection = document.getElementById('converterTabSection');
-        const profitTabSection = document.getElementById('profitTabSection');
+    const tabCalcBtn = document.getElementById('tabCalcBtn');
+    const tabProfitBtn = document.getElementById('tabProfitBtn');
+    const converterTabSection = document.getElementById('converterTabSection');
+    const profitTabSection = document.getElementById('profitTabSection');
 
-        const profitCoinSelect = document.getElementById('profitCoinSelect');
-        const profitCoinPrice = document.getElementById('profitCoinPrice');
-        const profitInvestment = document.getElementById('profitInvestment');
-        const profitTargetPrice = document.getElementById('profitTargetPrice');
-        const profitBuyingFee = document.getElementById('profitBuyingFee');
-        const profitSellingFee = document.getElementById('profitSellingFee');
-        const calcProfitActionBtn = document.getElementById('calcProfitActionBtn');
-        const profitResult = document.getElementById('profitResult');
+    const profitCoinSelect = document.getElementById('profitCoinSelect');
+    const profitCoinPrice = document.getElementById('profitCoinPrice');
+    const profitInvestment = document.getElementById('profitInvestment');
+    const profitTargetPrice = document.getElementById('profitTargetPrice');
+    const profitBuyingFee = document.getElementById('profitBuyingFee');
+    const profitSellingFee = document.getElementById('profitSellingFee');
+    const calcProfitActionBtn = document.getElementById('calcProfitActionBtn');
+    const profitResult = document.getElementById('profitResult');
 
-        const statusBadges = document.querySelectorAll('.status-badge');
+    const statusBadges = document.querySelectorAll('.status-badge');
 
-        // ==================== STATE ====================
-        let ratesData = {};
-        let currentActiveInput = topInput;
-        let pinnedCoins = ['bitcoin', 'ethereum', 'binancecoin', 'solana'];
-        
-        const coinsMeta = {
-            bitcoin: { symbol: 'BTC', name: 'Bitcoin', sparkline: [], change24h: 0 },
-            ethereum: { symbol: 'ETH', name: 'Ethereum', sparkline: [], change24h: 0 },
-            binancecoin: { symbol: 'BNB', name: 'BNB', sparkline: [], change24h: 0 },
-            solana: { symbol: 'SOL', name: 'Solana', sparkline: [], change24h: 0 }
-        };
+    // ==================== STATE ====================
+    let ratesData = {};
+    let currentActiveInput = topInput;
+    let pinnedCoins = ['bitcoin', 'ethereum', 'binancecoin', 'solana'];
+    
+    const coinsMeta = {
+        bitcoin: { symbol: 'BTC', name: 'Bitcoin', sparkline: [], change24h: 0 },
+        ethereum: { symbol: 'ETH', name: 'Ethereum', sparkline: [], change24h: 0 },
+        binancecoin: { symbol: 'BNB', name: 'Binance Coin', sparkline: [], change24h: 0 },
+        solana: { symbol: 'SOL', name: 'Solana', sparkline: [], change24h: 0 }
+    };
 
-        const fiatMeta = {
-            usd: { symbol: 'USD', name: 'US Dollar', isFiat: true },
-            eur: { symbol: 'EUR', name: 'Euro', isFiat: true },
-            rub: { symbol: 'RUB', name: 'Russian Ruble', isFiat: true },
-            uah: { symbol: 'UAH', name: 'Ukrainian Hryvnia', isFiat: true }
-        };
+    const fiatMeta = {
+        usd: { symbol: 'USD', name: 'US Dollar', isFiat: true },
+        eur: { symbol: 'EUR', name: 'Euro', isFiat: true },
+        rub: { symbol: 'RUB', name: 'Russian Ruble', isFiat: true },
+        uah: { symbol: 'UAH', name: 'Ukrainian Hryvnia', isFiat: true }
+    };
 
-        const CACHE_KEY = 'twa_terminal_rates_v8';
-        const META_CACHE_KEY = 'twa_terminal_meta_v8';
-        const CACHE_TTL = 45000;
+    const CACHE_KEY = 'twa_terminal_rates_v8';
+    const META_CACHE_KEY = 'twa_terminal_meta_v8';
+    const CACHE_TTL = 45000;
 
-        if (localStorage.getItem(META_CACHE_KEY)) {
-            try {
-                const saved = JSON.parse(localStorage.getItem(META_CACHE_KEY));
-                if (saved.pinnedCoins) pinnedCoins = saved.pinnedCoins;
-                Object.assign(coinsMeta, saved.coinsMeta || {});
-            } catch(e) {}
+    if (localStorage.getItem(META_CACHE_KEY)) {
+        try {
+            const saved = JSON.parse(localStorage.getItem(META_CACHE_KEY));
+            if (saved.pinnedCoins) pinnedCoins = saved.pinnedCoins;
+            Object.assign(coinsMeta, saved.coinsMeta || {});
+        } catch(e) {}
+    }
+
+    // ==================== HELPERS ====================
+    const getAssetMeta = (id) => coinsMeta[id] || fiatMeta[id] || { symbol: id.toUpperCase(), name: id };
+    const isFiat = (id) => !!fiatMeta[id];
+
+    function setStatusText(text) {
+        statusBadges.forEach(badge => {
+            badge.textContent = text;
+        });
+    }
+
+    function syncSelectOptions() {
+        const currentTop = topSelect.value;
+        const currentBottom = bottomSelect.value;
+
+        topSelect.innerHTML = '';
+        bottomSelect.innerHTML = '';
+        profitCoinSelect.innerHTML = '';
+
+        pinnedCoins.forEach(id => {
+            const meta = coinsMeta[id] || { symbol: id.toUpperCase() };
+            topSelect.appendChild(new Option(meta.symbol, id));
+            bottomSelect.appendChild(new Option(meta.symbol, id));
+            profitCoinSelect.appendChild(new Option(meta.name || meta.symbol, id));
+        });
+
+        Object.keys(fiatMeta).forEach(id => {
+            const meta = fiatMeta[id];
+            topSelect.appendChild(new Option(meta.symbol, id));
+            bottomSelect.appendChild(new Option(meta.symbol, id));
+        });
+
+        topSelect.value = pinnedCoins.includes(currentTop) || Object.keys(fiatMeta).includes(currentTop) ? currentTop : 'bitcoin';
+        bottomSelect.value = Object.keys(fiatMeta).includes(currentBottom) ? currentBottom : 'usd';
+        profitCoinSelect.value = pinnedCoins.includes(topSelect.value) ? topSelect.value : pinnedCoins[0];
+    }
+
+    function generateSparklineSVG(prices = []) {
+        if (prices.length < 2) {
+            return `<svg width="52" height="20"><line x1="0" y1="10" x2="52" y2="10" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2 2"/></svg>`;
         }
+        const min = Math.min(...prices);
+        const max = Math.max(...prices);
+        const range = max - min || 1;
+        const points = prices.map((price, i) => {
+            const x = (i / (prices.length - 1)) * 52;
+            const y = 20 - ((price - min) / range) * 18;
+            return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(' ');
+        const color = prices[prices.length-1] >= prices[0] ? '#10b981' : '#ef4444';
+        return `<svg width="52" height="20" viewBox="0 0 52 20"><polyline fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" points="${points}"/></svg>`;
+    }
 
-        // ==================== HELPERS ====================
-        const getAssetMeta = (id) => coinsMeta[id] || fiatMeta[id] || { symbol: id.toUpperCase(), name: id };
-        const isFiat = (id) => !!fiatMeta[id];
+    function updateMarquee() {
+        marqueeTicker.innerHTML = '';
+        pinnedCoins.forEach(id => {
+            const meta = coinsMeta[id];
+            const rate = ratesData[id]?.usd;
+            if (!meta || !rate) return;
+            
+            const change = meta.change24h || 0;
+            const color = change >= 0 ? 'text-emerald-400' : 'text-red-400';
+            const sign = change >= 0 ? '+' : '';
+            
+            const el = document.createElement('span');
+            el.className = 'inline-flex items-center gap-1.5 font-mono whitespace-nowrap mr-8'; 
+            el.innerHTML = `
+                <span class="text-white/90">${meta.symbol}</span>
+                <span class="text-white">$${rate.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</span>
+                <span class="${color} text-xs">(${sign}${change.toFixed(1)}%)</span>
+            `;
+            marqueeTicker.appendChild(el);
+        });
+    }
 
-        function setStatusText(text) {
-            statusBadges.forEach(badge => {
-                badge.textContent = text;
-            });
-        }
+    function renderPins() {
+        pinsContainer.innerHTML = '';
+        pinnedCoins.forEach(id => {
+            const meta = coinsMeta[id];
+            if (!meta) return;
 
-        function syncSelectOptions() {
-            const currentTop = topSelect.value;
-            const currentBottom = bottomSelect.value;
+            const price = ratesData[id]?.usd || 0;
+            const change = meta.change24h || 0;
+            const colorClass = change >= 0 ? 'text-emerald-400' : 'text-red-400';
 
-            topSelect.innerHTML = '';
-            bottomSelect.innerHTML = '';
-            profitCoinSelect.innerHTML = '';
+            const card = document.createElement('div');
+            card.className = `pin-card flex items-center gap-2 bg-zinc-900 border border-gray-700/50 px-3 py-2.5 rounded-2xl shrink-0 cursor-grab active:cursor-grabbing relative`;
+            card.draggable = true;
+            card.dataset.id = id;
+            card.innerHTML = `
+                <div>
+                    <div class="text-xs font-bold">${meta.symbol}</div>
+                    <div class="text-[10px] font-mono ${colorClass}">${price ? '$' + price.toLocaleString('en-US', {maximumFractionDigits: 4}) : '—'}</div>
+                </div>
+                <div class="bg-black/40 rounded-lg p-1">${generateSparklineSVG(meta.sparkline)}</div>
+                <button class="delete-pin-btn absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 hover:bg-red-600 text-white text-[9px] flex items-center justify-center rounded-full shadow-md border border-zinc-900" data-id="${id}">✕</button>
+            `;
+            pinsContainer.appendChild(card);
+        });
+        initDragAndDrop();
+        attachDeleteListeners();
+    }
 
-            pinnedCoins.forEach(id => {
-                const meta = coinsMeta[id] || { symbol: id.toUpperCase() };
-                topSelect.appendChild(new Option(meta.symbol, id));
-                bottomSelect.appendChild(new Option(meta.symbol, id));
-                profitCoinSelect.appendChild(new Option(meta.name || meta.symbol, id));
-            });
-
-            Object.keys(fiatMeta).forEach(id => {
-                const meta = fiatMeta[id];
-                topSelect.appendChild(new Option(meta.symbol, id));
-                bottomSelect.appendChild(new Option(meta.symbol, id));
-            });
-
-            topSelect.value = pinnedCoins.includes(currentTop) || Object.keys(fiatMeta).includes(currentTop) ? currentTop : 'bitcoin';
-            bottomSelect.value = Object.keys(fiatMeta).includes(currentBottom) ? currentBottom : 'usd';
-            profitCoinSelect.value = pinnedCoins.includes(topSelect.value) ? topSelect.value : pinnedCoins[0];
-        }
-
-        function generateSparklineSVG(prices = []) {
-            if (prices.length < 2) {
-                return `<svg width="52" height="20"><line x1="0" y1="10" x2="52" y2="10" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2 2"/></svg>`;
-            }
-            const min = Math.min(...prices);
-            const max = Math.max(...prices);
-            const range = max - min || 1;
-            const points = prices.map((price, i) => {
-                const x = (i / (prices.length - 1)) * 52;
-                const y = 20 - ((price - min) / range) * 18;
-                return `${x.toFixed(1)},${y.toFixed(1)}`;
-            }).join(' ');
-            const color = prices[prices.length-1] >= prices[0] ? '#10b981' : '#ef4444';
-            return `<svg width="52" height="20" viewBox="0 0 52 20"><polyline fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round" points="${points}"/></svg>`;
-        }
-
-        function updateMarquee() {
-            marqueeTicker.innerHTML = '';
-            pinnedCoins.forEach(id => {
-                const meta = coinsMeta[id];
-                const rate = ratesData[id]?.usd;
-                if (!meta || !rate) return;
+    function attachDeleteListeners() {
+        document.querySelectorAll('.delete-pin-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopImmediatePropagation();
+                const id = btn.dataset.id;
+                if (pinnedCoins.length <= 2) return;
                 
-                const change = meta.change24h || 0;
-                const color = change >= 0 ? 'text-emerald-400' : 'text-red-400';
-                const sign = change >= 0 ? '+' : '';
-                
-                const el = document.createElement('span');
-                el.className = 'inline-flex items-center gap-1.5 font-mono whitespace-nowrap mr-8'; 
-                el.innerHTML = `
-                    <span class="text-white/90">${meta.symbol}</span>
-                    <span class="text-white">$${rate.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 2})}</span>
-                    <span class="${color} text-xs">(${sign}${change.toFixed(1)}%)</span>
-                `;
-                marqueeTicker.appendChild(el);
-            });
-        }
-
-        function renderPins() {
-            pinsContainer.innerHTML = '';
-            pinnedCoins.forEach(id => {
-                const meta = coinsMeta[id];
-                if (!meta) return;
-
-                const price = ratesData[id]?.usd || 0;
-                const change = meta.change24h || 0;
-                const colorClass = change >= 0 ? 'text-emerald-400' : 'text-red-400';
-
-                const card = document.createElement('div');
-                card.className = `pin-card flex items-center gap-2 bg-zinc-900 border border-gray-700/50 px-3 py-2.5 rounded-2xl shrink-0 cursor-grab active:cursor-grabbing relative`;
-                card.draggable = true;
-                card.dataset.id = id;
-                card.innerHTML = `
-                    <div>
-                        <div class="text-xs font-bold">${meta.symbol}</div>
-                        <div class="text-[10px] font-mono ${colorClass}">${price ? '$' + price.toLocaleString('en-US', {maximumFractionDigits: 4}) : '—'}</div>
-                    </div>
-                    <div class="bg-black/40 rounded-lg p-1">${generateSparklineSVG(meta.sparkline)}</div>
-                    <button class="delete-pin-btn absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 hover:bg-red-600 text-white text-[9px] flex items-center justify-center rounded-full shadow-md border border-zinc-900" data-id="${id}">✕</button>
-                `;
-                pinsContainer.appendChild(card);
-            });
-            initDragAndDrop();
-            attachDeleteListeners();
-        }
-
-        function attachDeleteListeners() {
-            document.querySelectorAll('.delete-pin-btn').forEach(btn => {
-                btn.onclick = (e) => {
-                    e.stopImmediatePropagation();
-                    const id = btn.dataset.id;
-                    if (pinnedCoins.length <= 2) return;
-                    
-                    pinnedCoins = pinnedCoins.filter(x => x !== id);
-                    delete coinsMeta[id];
-                    localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
-                    renderPins();
-                    updateMarquee();
-                    syncSelectOptions();
-                    updateCalculator();
-                    tg.HapticFeedback.notificationOccurred('warning');
-                };
-            });
-        }
-
-        function initDragAndDrop() {
-            let dragged = null;
-            document.querySelectorAll('.pin-card').forEach(card => {
-                card.addEventListener('dragstart', () => {
-                    dragged = card;
-                    setTimeout(() => card.style.opacity = '0.4', 0);
-                });
-                card.addEventListener('dragend', () => {
-                    card.style.opacity = '1';
-                    pinnedCoins = Array.from(pinsContainer.children).map(el => el.dataset.id);
-                    localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
-                    syncSelectOptions();
-                });
-            }); 
-
-            pinsContainer.addEventListener('dragover', e => {
-                e.preventDefault();
-                const afterElement = getDragAfterElement(pinsContainer, e.clientX);
-                if (afterElement == null) pinsContainer.appendChild(dragged);
-                else pinsContainer.insertBefore(dragged, afterElement);
-            });
-        }
-
-        function getDragAfterElement(container, x) {
-            const draggableElements = [...container.querySelectorAll('.pin-card:not(.dragging)')];
-            return draggableElements.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = x - box.left - box.width / 2;
-                if (offset < 0 && offset > closest.offset) return { offset: offset, element: child };
-                return closest;
-            }, { offset: Number.NEGATIVE_INFINITY }).element;
-        }
-
-        async function fetchWithFallback(url) {
-            try {
-                const res = await fetch(url);
-                if (res.ok) return await res.json();
-            } catch {}
-            try {
-                const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
-                if (res.ok) return await res.json();
-            } catch {}
-            return null;
-        }
-
-        async function fetchRates() {
-            const cached = localStorage.getItem(CACHE_KEY);
-            const cachedTime = localStorage.getItem(CACHE_KEY + '_ts');
-
-            if (cached && cachedTime && (Date.now() - parseInt(cachedTime) < CACHE_TTL)) {
-                ratesData = JSON.parse(cached);
-                setStatusText('кэш');
+                pinnedCoins = pinnedCoins.filter(x => x !== id);
+                delete coinsMeta[id];
+                localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
                 renderPins();
                 updateMarquee();
-                updateCalculator(); 
-                if (!profitCoinPrice.value && ratesData[profitCoinSelect.value]?.usd) {
-                    profitCoinPrice.value = ratesData[profitCoinSelect.value].usd;
-                }
-                return;
-            }
+                syncSelectOptions();
+                updateCalculator();
+                tg.HapticFeedback.notificationOccurred('warning');
+            };
+        });
+    }
 
-            try {
-                const ids = pinnedCoins.join(',');
-                const data = await fetchWithFallback(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd,eur,rub,uah&include_24hr_change=true`);
+    function initDragAndDrop() {
+        let dragged = null;
+        document.querySelectorAll('.pin-card').forEach(card => {
+            card.addEventListener('dragstart', () => {
+                dragged = card;
+                setTimeout(() => card.style.opacity = '0.4', 0);
+            });
+            card.addEventListener('dragend', () => {
+                card.style.opacity = '1';
+                pinnedCoins = Array.from(pinsContainer.children).map(el => el.dataset.id);
+                localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
+                syncSelectOptions();
+            });
+        }); 
 
-                if (data) {
-                    ratesData = {};
-                    pinnedCoins.forEach(id => {
-                        if (data[id]) {
-                            ratesData[id] = {
-                                usd: data[id].usd,
-                                eur: data[id].eur,
-                                rub: data[id].rub,
-                                uah: data[id].uah
-                            };
-                            
-                            if (coinsMeta[id] && data[id].usd_24h_change !== undefined) {
-                                coinsMeta[id].change24h = data[id].usd_24h_change;
-                            }
-                        }
-                    });
+        pinsContainer.addEventListener('dragover', e => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(pinsContainer, e.clientX);
+            if (afterElement == null) pinsContainer.appendChild(dragged);
+            else pinsContainer.insertBefore(dragged, afterElement);
+        });
+    }
 
-                    localStorage.setItem(CACHE_KEY, JSON.stringify(ratesData));
-                    localStorage.setItem(CACHE_KEY + '_ts', Date.now());
-                    localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
-                    setStatusText('live');
-                }
-            } catch (e) {
-                console.error(e);
-                if (cached) {
-                    ratesData = JSON.parse(cached);
-                    setStatusText('offline');
-                }
-            }
+    function getDragAfterElement(container, x) {
+        const draggableElements = [...container.querySelectorAll('.pin-card:not(.dragging)')];
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = x - box.left - box.width / 2;
+            if (offset < 0 && offset > closest.offset) return { offset: offset, element: child };
+            return closest;
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
 
+    async function fetchWithFallback(url) {
+        try {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 5000);
+            const res = await fetch(url, { signal: controller.signal });
+            clearTimeout(timeout);
+            if (res.ok) return await res.json();
+        } catch (e) {}
+        try {
+            const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+            if (res.ok) return await res.json();
+        } catch {}
+        return null;
+    }
+
+    async function fetchRates() {
+        const cached = localStorage.getItem(CACHE_KEY);
+        const cachedTime = localStorage.getItem(CACHE_KEY + '_ts');
+
+        if (cached && cachedTime && (Date.now() - parseInt(cachedTime) < CACHE_TTL)) {
+            ratesData = JSON.parse(cached);
+            setStatusText('кэш');
             renderPins();
             updateMarquee();
-            updateCalculator();
-            
+            updateCalculator(); 
             if (!profitCoinPrice.value && ratesData[profitCoinSelect.value]?.usd) {
                 profitCoinPrice.value = ratesData[profitCoinSelect.value].usd;
             }
+            return;
         }
 
-        function getAssetPriceInUSD(id) {
-            if (id === 'usd') return 1;
-            if (fiatMeta[id]) {
-                const btcInUsd = ratesData['bitcoin']?.usd;
-                const btcInFiat = ratesData['bitcoin']?.[id];
-                if (btcInUsd && btcInFiat) return btcInUsd / btcInFiat;
-                if (id === 'eur') return 1.08;
-                if (id === 'rub') return 0.011;
-                if (id === 'uah') return 0.024;
-                return 1;
-            }
-            return ratesData[id]?.usd || 0;
-        }
+        try {
+            const ids = pinnedCoins.join(',');
+            const data = await fetchWithFallback(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd,eur,rub,uah&include_24hr_change=true`);
 
-        function parseAndEvaluateInput(inputElement) {
-            let val = inputElement.value.trim();
-            if (!val) return 0;
-            if (/[+\-*/]$/.test(val)) val = val.slice(0, -1);
-            try {
-                let sanitized = val.replace(/×/g, '*').replace(/÷/g, '/');
-                if (/^[0-9.+\-*/() ]+$/.test(sanitized)) {
-                    let result = new Function(`return (${sanitized})`)();
-                    if (typeof result === 'number' && !isNaN(result) && isFinite(result)) return result;
-                }
-            } catch (e) {}
-            let parsed = parseFloat(val);
-            return isNaN(parsed) ? 0 : parsed;
-        }
+            if (data) {
+                ratesData = {};
+                pinnedCoins.forEach(id => {
+                    if (data[id]) {
+                        ratesData[id] = {
+                            usd: data[id].usd,
+                            eur: data[id].eur,
+                            rub: data[id].rub,
+                            uah: data[id].uah
+                        };
+                        if (coinsMeta[id] && data[id].usd_24h_change !== undefined) {
+                            coinsMeta[id].change24h = data[id].usd_24h_change;
+                        }
+                    }
+                });
 
-        function formatValue(value, isAssetFiat) {
-            if (value === 0) return '0';
-            let fixed = value.toFixed(isAssetFiat ? 2 : 6);
-            if (isAssetFiat && parseFloat(fixed) === 0 && value > 0) fixed = value.toFixed(4);
-            if (!isAssetFiat) fixed = fixed.replace(/0+$/, '').replace(/\.$/, '');
-            return fixed;
-        }
-
-        function updateCalculator() {
-            const fromId = topSelect.value;
-            const toId = bottomSelect.value;
-
-            const fromMeta = getAssetMeta(fromId);
-            const toMeta = getAssetMeta(toId);
-
-            topNameLabel.textContent = fromMeta.name || fromMeta.symbol;
-            bottomNameLabel.textContent = toMeta.name || toMeta.symbol;
-
-            const priceFrom = getAssetPriceInUSD(fromId);
-            const priceTo = getAssetPriceInUSD(toId);
-
-            if (!priceFrom || !priceTo) {
-                rateDisplay.textContent = '—';
-                return;
-            }
-
-            const exchangeRate = priceFrom / priceTo;
-            rateDisplay.textContent = `1 ${fromMeta.symbol} = ${exchangeRate.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 6})} ${toMeta.symbol}`;
-
-            if (currentActiveInput === topInput) {
-                const topVal = parseAndEvaluateInput(topInput);
-                bottomInput.value = formatValue(topVal * exchangeRate, isFiat(toId));
-            } else {
-                const bottomVal = parseAndEvaluateInput(bottomInput);
-                topInput.value = formatValue(bottomVal / exchangeRate, isFiat(fromId));
-            }
-        }
-
-        // ==================== SEARCH ====================
-        executeSearchBtn.addEventListener('click', async () => {
-            const query = coinSearchInput.value.trim().toLowerCase();
-            if (!query) return;
-
-            searchStatus.textContent = 'Поиск...';
-            searchStatus.className = 'text-blue-400 text-[11px] px-2';
-
-            try {
-                const searchData = await fetchWithFallback(`https://api.coingecko.com/api/v3/search?query=${query}`);
-                if (!searchData?.coins?.length) throw new Error('Not found');
-
-                let coin = searchData.coins[0];
-                let coinId = coin.id;
-
-                if (coinId === 'the-open-network') coinId = 'toncoin';
-                if (pinnedCoins.includes(coinId)) {
-                    searchStatus.textContent = 'Уже в пинах';
-                    searchStatus.className = 'text-yellow-400 text-[11px] px-2';
-                    return;
-                }
-
-                let sparkline = [];
-                try {
-                    const chart = await fetchWithFallback(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7&interval=daily`);
-                    if (chart?.prices) sparkline = chart.prices.map(p => p[1]);
-                } catch {}
-
-                coinsMeta[coinId] = {
-                    symbol: coin.symbol.toUpperCase(),
-                    name: coin.name,
-                    sparkline: sparkline,
-                    change24h: 0
-                };
-
-                pinnedCoins.unshift(coinId);
+                localStorage.setItem(CACHE_KEY, JSON.stringify(ratesData));
+                localStorage.setItem(CACHE_KEY + '_ts', Date.now());
                 localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
-                localStorage.removeItem(CACHE_KEY);
-
-                await fetchRates();
-                
-                coinSearchInput.value = '';
-                searchPanel.classList.add('hidden');
-                searchStatus.textContent = 'Добавлено ✓';
-                searchStatus.className = 'text-emerald-400 text-[11px] px-2';
-                
-                tg.HapticFeedback.notificationOccurred('success');
-            } catch (err) {
-                console.error(err);
-                searchStatus.textContent = 'Монета не найдена';
-                searchStatus.className = 'text-red-400 text-[11px] px-2';
+                setStatusText('live');
             }
-        });
+        } catch (e) {
+            console.error(e);
+            if (cached) {
+                ratesData = JSON.parse(cached);
+                setStatusText('offline');
+            }
+        }
 
-        // ==================== EVENT LISTENERS ====================
-        toggleSearchBtn.addEventListener('click', () => {
-            searchPanel.classList.toggle('hidden');
-            if (!searchPanel.classList.contains('hidden')) setTimeout(() => coinSearchInput.focus(), 100);
-        });
-
-        topInputBox.addEventListener('click', () => {
-            currentActiveInput = topInput;
-            topInputBox.classList.add('active-input-box');
-            bottomInputBox.classList.remove('active-input-box');
-        });
-
-        bottomInputBox.addEventListener('click', () => {
-            currentActiveInput = bottomInput;
-            bottomInputBox.classList.add('active-input-box');
-            topInputBox.classList.remove('active-input-box');
-        });
-
-        document.querySelectorAll('.numpad-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                tg.HapticFeedback.impactOccurred('light');
-                const action = btn.dataset.action;
-                let val = currentActiveInput.value;
-
-                if (action === 'clear') currentActiveInput.value = '';
-                else if (action === 'backspace') currentActiveInput.value = val.slice(0, -1);
-                else if (action === 'equal') {
-                    try {
-                        let evaluated = new Function(`return ${val.replace(/×/g,'*').replace(/÷/g,'/')}`)();
-                        currentActiveInput.value = parseFloat(evaluated.toFixed(8));
-                    } catch {}
-                }
-                else if (['+', '-', '*', '/'].includes(action)) {
-                    if (val && !/[+\-*/]$/.test(val)) currentActiveInput.value += action;
-                }
-                else if (action === 'dot') {
-                    const lastNum = val.split(/[+\-*/]/).pop();
-                    if (!lastNum.includes('.')) currentActiveInput.value += (val === '' || /[+\-*/]$/.test(val)) ? '0.' : '.';
-                }
-                else {
-                    currentActiveInput.value = (val === '0' && action !== '.') ? action : val + action;
-                }
-
-                updateCalculator();
-            });
-        });
-
-        swapBtn.addEventListener('click', () => {
-            tg.HapticFeedback.selectionChanged();
-            
-            const tempSelectValue = topSelect.value;
-            topSelect.value = bottomSelect.value;
-            bottomSelect.value = tempSelectValue;
-
-            const tempInputValue = topInput.value;
-            topInput.value = bottomInput.value;
-            bottomInput.value = tempInputValue;
-
-            currentActiveInput = currentActiveInput === topInput ? bottomInput : topInput;
-            topInputBox.classList.toggle('active-input-box');
-            bottomInputBox.classList.toggle('active-input-box');
-            
-            updateCalculator();
-        });
-
-        topSelect.addEventListener('change', () => {
-            currentActiveInput = topInput;
-            topInputBox.classList.add('active-input-box');
-            bottomInputBox.classList.remove('active-input-box');
-            updateCalculator();
-        });
+        renderPins();
+        updateMarquee();
+        updateCalculator();
         
-        bottomSelect.addEventListener('change', () => {
-            currentActiveInput = topInput;
-            topInputBox.classList.add('active-input-box');
-            bottomInputBox.classList.remove('active-input-box');
-            updateCalculator();
-        });
+        if (!profitCoinPrice.value && ratesData[profitCoinSelect.value]?.usd) {
+            profitCoinPrice.value = ratesData[profitCoinSelect.value].usd;
+        }
+    }
 
-        profitCoinSelect.addEventListener('change', () => {
-            const coinId = profitCoinSelect.value;
-            if (ratesData[coinId]?.usd) {
-                profitCoinPrice.value = ratesData[coinId].usd;
-            } else {
-                profitCoinPrice.value = '';
+    function getAssetPriceInUSD(id) {
+        if (id === 'usd') return 1;
+        if (fiatMeta[id]) {
+            const btcInUsd = ratesData['bitcoin']?.usd;
+            const btcInFiat = ratesData['bitcoin']?.[id];
+            if (btcInUsd && btcInFiat) return btcInUsd / btcInFiat;
+            if (id === 'eur') return 1.08;
+            if (id === 'rub') return 0.011;
+            if (id === 'uah') return 0.024;
+            return 1;
+        }
+        return ratesData[id]?.usd || 0;
+    }
+
+    function parseAndEvaluateInput(inputElement) {
+        let val = inputElement.value.trim();
+        if (!val) return 0;
+        if (/[+\-*/]$/.test(val)) val = val.slice(0, -1);
+        try {
+            let sanitized = val.replace(/×/g, '*').replace(/÷/g, '/');
+            if (/^[0-9.+\-*/() ]+$/.test(sanitized)) {
+                let result = new Function(`return (${sanitized})`)();
+                if (typeof result === 'number' && !isNaN(result) && isFinite(result)) return result;
             }
-            tg.HapticFeedback.selectionChanged();
-        });
+        } catch (e) {}
+        let parsed = parseFloat(val);
+        return isNaN(parsed) ? 0 : parsed;
+    }
 
-        tabCalcBtn.addEventListener('click', () => {
-            tabCalcBtn.classList.add('active');
-            tabProfitBtn.classList.remove('active');
-            converterTabSection.classList.remove('hidden');
-            profitTabSection.classList.add('hidden');
-        });
+    function formatValue(value, isAssetFiat) {
+        if (value === 0) return '0';
+        let fixed = value.toFixed(isAssetFiat ? 2 : 6);
+        if (isAssetFiat && parseFloat(fixed) === 0 && value > 0) fixed = value.toFixed(4);
+        if (!isAssetFiat) fixed = fixed.replace(/0+$/, '').replace(/\.$/, '');
+        return fixed;
+    }
 
-        tabProfitBtn.addEventListener('click', () => {
-            tabCalcBtn.classList.remove('active');
-            tabProfitBtn.classList.add('active');
-            converterTabSection.classList.add('hidden');
-            profitTabSection.classList.remove('hidden');
-        });
+    function updateCalculator() {
+        const fromId = topSelect.value;
+        const toId = bottomSelect.value;
 
-        calcProfitActionBtn.addEventListener('click', () => {
-            tg.HapticFeedback.notificationOccurred('success');
-            
-            const price = parseFloat(profitCoinPrice.value);
-            const investment = parseFloat(profitInvestment.value);
-            const targetPrice = parseFloat(profitTargetPrice.value);
-            const buyFee = parseFloat(profitBuyingFee.value) || 0;
-            const sellFee = parseFloat(profitSellingFee.value) || 0;
+        const fromMeta = getAssetMeta(fromId);
+        const toMeta = getAssetMeta(toId);
 
-            if (!price || !investment || !targetPrice || price <= 0 || investment <= 0) {
-                profitResult.innerHTML = `<span class="text-red-400">Введите корректные данные</span>`;
+        topNameLabel.textContent = fromMeta.name || fromMeta.symbol;
+        bottomNameLabel.textContent = toMeta.name || toMeta.symbol;
+
+        const priceFrom = getAssetPriceInUSD(fromId);
+        const priceTo = getAssetPriceInUSD(toId);
+
+        if (!priceFrom || !priceTo) {
+            rateDisplay.textContent = '—';
+            return;
+        }
+
+        const exchangeRate = priceFrom / priceTo;
+        rateDisplay.textContent = `1 ${fromMeta.symbol} = ${exchangeRate.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 6})} ${toMeta.symbol}`;
+
+        if (currentActiveInput === topInput) {
+            const topVal = parseAndEvaluateInput(topInput);
+            bottomInput.value = formatValue(topVal * exchangeRate, isFiat(toId));
+        } else {
+            const bottomVal = parseAndEvaluateInput(bottomInput);
+            topInput.value = formatValue(bottomVal / exchangeRate, isFiat(fromId));
+        }
+    }
+
+    // ==================== SEARCH ====================
+    executeSearchBtn.addEventListener('click', async () => {
+        const query = coinSearchInput.value.trim().toLowerCase();
+        if (!query) return;
+
+        searchStatus.textContent = 'Поиск...';
+        searchStatus.className = 'text-blue-400 text-[11px] px-2';
+
+        try {
+            const searchData = await fetchWithFallback(`https://api.coingecko.com/api/v3/search?query=${query}`);
+            if (!searchData?.coins?.length) throw new Error('Not found');
+
+            let coin = searchData.coins[0];
+            let coinId = coin.id;
+
+            if (coinId === 'the-open-network') coinId = 'toncoin';
+            if (pinnedCoins.includes(coinId)) {
+                searchStatus.textContent = 'Уже в пинах';
+                searchStatus.className = 'text-yellow-400 text-[11px] px-2';
                 return;
             }
 
-            const coinsBought = investment / price * (1 - buyFee/100);
-            const grossSell = coinsBought * targetPrice;
-            const sellFeeAmount = grossSell * (sellFee / 100);
-            const netProfit = grossSell - sellFeeAmount - investment;
+            let sparkline = [];
+            try {
+                const chart = await fetchWithFallback(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7&interval=daily`);
+                if (chart?.prices) sparkline = chart.prices.map(p => p[1]);
+            } catch {}
 
-            const isProfit = netProfit > 0;
-            profitResult.className = `min-h-[52px] rounded-2xl p-4 text-center font-mono text-sm border ${isProfit ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`;
-            profitResult.innerHTML = isProfit 
-                ? `Прибыль: <span class="font-bold">+$${netProfit.toFixed(2)}</span>` 
-                : `Убыток: <span class="font-bold">-$${Math.abs(netProfit).toFixed(2)}</span>`;
-        });
+            coinsMeta[coinId] = {
+                symbol: coin.symbol.toUpperCase(),
+                name: coin.name,
+                sparkline: sparkline,
+                change24h: 0
+            };
 
-        let currentLiqPeriod = 24;
-        let currentLiqAsset = 'btc';
+            pinnedCoins.unshift(coinId);
+            localStorage.setItem(META_CACHE_KEY, JSON.stringify({ pinnedCoins, coinsMeta }));
+            localStorage.removeItem(CACHE_KEY);
 
-        function updateLiquidationMap() {
-            const base = currentLiqAsset === 'btc' ? { long: 428, short: 312 } : { long: 215, short: 287 };
-            const mult = currentLiqPeriod === 48 ? 1.85 : 1;
+            await fetchRates();
             
-            const long = Math.round(base.long * mult);
-            const short = Math.round(base.short * mult);
-            const total = long + short;
-
-            document.getElementById('liqLongValue').textContent = `$${long}M`;
-            document.getElementById('liqShortValue').textContent = `$${short}M`;
-            document.getElementById('liqLongPercent').textContent = `${(long/total*100).toFixed(1)}%`;
-            document.getElementById('liqShortPercent').textContent = `${(short/total*100).toFixed(1)}%`;
+            coinSearchInput.value = '';
+            searchPanel.classList.add('hidden');
+            searchStatus.textContent = 'Добавлено ✓';
+            searchStatus.className = 'text-emerald-400 text-[11px] px-2';
+            
+            tg.HapticFeedback.notificationOccurred('success');
+        } catch (err) {
+            console.error(err);
+            searchStatus.textContent = 'Монета не найдена';
+            searchStatus.className = 'text-red-400 text-[11px] px-2';
         }
+    });
 
-        document.querySelectorAll('.period-switch, .asset-switch').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const parentGroup = btn.classList.contains('period-switch') ? '.period-switch' : '.asset-switch';
-                document.querySelectorAll(parentGroup).forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                if (btn.dataset.liqPeriod) currentLiqPeriod = parseInt(btn.dataset.liqPeriod);
-                if (btn.dataset.liqAsset) currentLiqAsset = btn.dataset.liqAsset;
-                
-                updateLiquidationMap();
-                tg.HapticFeedback.impactOccurred('light');
-            });
-        });
+    // ==================== EVENT LISTENERS ====================
+    toggleSearchBtn.addEventListener('click', () => {
+        searchPanel.classList.toggle('hidden');
+        if (!searchPanel.classList.contains('hidden')) setTimeout(() => coinSearchInput.focus(), 100);
+    });
 
-        // ==================== MEMPOOL ====================
-        async function fetchMempoolData() {
-            try {
-                const [feeRes, diffRes] = await Promise.all([
-                    fetch('https://mempool.space/api/v1/fees/recommended'),
-                    fetch('https://mempool.space/api/v1/difficulty-adjustment')
-                ]);
+    topInputBox.addEventListener('click', () => {
+        currentActiveInput = topInput;
+        topInputBox.classList.add('active-input-box');
+        bottomInputBox.classList.remove('active-input-box');
+    });
 
-                const fees = await feeRes.json();
-                const diff = await diffRes.json();
+    bottomInputBox.addEventListener('click', () => {
+        currentActiveInput = bottomInput;
+        bottomInputBox.classList.add('active-input-box');
+        topInputBox.classList.remove('active-input-box');
+    });
 
-                const btcPrice = ratesData.bitcoin?.usd || 65000;
-                const satToUsd = (btcPrice / 100000000) * 140;
+    document.querySelectorAll('.numpad-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            tg.HapticFeedback.impactOccurred('light');
+            const action = btn.dataset.action;
+            let val = currentActiveInput.value;
 
-                document.getElementById('gasLowPriority').textContent = fees.halfHourFee;
-                document.getElementById('gasMedPriority').textContent = fees.hourFee;
-                document.getElementById('gasHighPriority').textContent = fees.fastestFee;
-                document.getElementById('gasNoPriority').textContent = fees.economyFee || fees.minimumFee || 12;
-
-                document.getElementById('gasLowPriorityFiat').textContent = '$' + (fees.halfHourFee * satToUsd).toFixed(2);
-                document.getElementById('gasMedPriorityFiat').textContent = '$' + (fees.hourFee * satToUsd).toFixed(2);
-                document.getElementById('gasHighPriorityFiat').textContent = '$' + (fees.fastestFee * satToUsd).toFixed(2);
-                document.getElementById('gasNoPriorityFiat').textContent = '$' + ((fees.economyFee || 12) * satToUsd).toFixed(2);
-
-                // Исправлено: API возвращает данные до следующего ретаргета сложности, а не до халвинга
-                document.getElementById('mempoolUnconfirmed').innerHTML = `${diff.remainingBlocks || '?'} бл. до ретаргета`;
-            } catch (e) {
-                console.warn('Mempool data unavailable');
+            if (action === 'clear') currentActiveInput.value = '';
+            else if (action === 'backspace') currentActiveInput.value = val.slice(0, -1);
+            else if (action === 'equal') {
+                try {
+                    let evaluated = new Function(`return ${val.replace(/×/g,'*').replace(/÷/g,'/')}`)();
+                    currentActiveInput.value = parseFloat(evaluated.toFixed(8));
+                } catch {}
             }
-        }
+            else if (['+', '-', '*', '/'].includes(action)) {
+                if (val && !/[+\-*/]$/.test(val)) currentActiveInput.value += action;
+            }
+            else if (action === '.') {
+                const lastNum = val.split(/[+\-*/]/).pop();
+                if (!lastNum.includes('.')) currentActiveInput.value += (val === '' || /[+\-*/]$/.test(val)) ? '0.' : '.';
+            }
+            else {
+                currentActiveInput.value = (val === '0' && action !== '.') ? action : val + action;
+            }
+
+            updateCalculator();
+        });
+    });
+
+    swapBtn.addEventListener('click', () => {
+        tg.HapticFeedback.selectionChanged();
         
-        // ==================== GLOBAL METRICS (GWEI & F&G) ====================
-        async function fetchGlobalMetrics() {
-            // 1. Fetch ETH Gas Price (Gwei)
-            let gasLoaded = false;
+        const tempSelectValue = topSelect.value;
+        topSelect.value = bottomSelect.value;
+        bottomSelect.value = tempSelectValue;
+
+        const tempInputValue = topInput.value;
+        topInput.value = bottomInput.value;
+        bottomInput.value = tempInputValue;
+
+        currentActiveInput = currentActiveInput === topInput ? bottomInput : topInput;
+        topInputBox.classList.toggle('active-input-box');
+        bottomInputBox.classList.toggle('active-input-box');
+        
+        updateCalculator();
+    });
+
+    topSelect.addEventListener('change', () => {
+        currentActiveInput = topInput;
+        topInputBox.classList.add('active-input-box');
+        bottomInputBox.classList.remove('active-input-box');
+        updateCalculator();
+    });
+    
+    bottomSelect.addEventListener('change', () => {
+        currentActiveInput = topInput;
+        topInputBox.classList.add('active-input-box');
+        bottomInputBox.classList.remove('active-input-box');
+        updateCalculator();
+    });
+
+    profitCoinSelect.addEventListener('change', () => {
+        const coinId = profitCoinSelect.value;
+        if (ratesData[coinId]?.usd) {
+            profitCoinPrice.value = ratesData[coinId].usd;
+        } else {
+            profitCoinPrice.value = '';
+        }
+        tg.HapticFeedback.selectionChanged();
+    });
+
+    tabCalcBtn.addEventListener('click', () => {
+        tabCalcBtn.classList.add('active');
+        tabProfitBtn.classList.remove('active');
+        converterTabSection.classList.remove('hidden');
+        profitTabSection.classList.add('hidden');
+    });
+
+    tabProfitBtn.addEventListener('click', () => {
+        tabCalcBtn.classList.remove('active');
+        tabProfitBtn.classList.add('active');
+        converterTabSection.classList.add('hidden');
+        profitTabSection.classList.remove('hidden');
+    });
+
+    calcProfitActionBtn.addEventListener('click', () => {
+        tg.HapticFeedback.notificationOccurred('success');
+        
+        const price = parseFloat(profitCoinPrice.value);
+        const investment = parseFloat(profitInvestment.value);
+        const targetPrice = parseFloat(profitTargetPrice.value);
+        const buyFee = parseFloat(profitBuyingFee.value) || 0;
+        const sellFee = parseFloat(profitSellingFee.value) || 0;
+
+        if (!price || !investment || !targetPrice || price <= 0 || investment <= 0) {
+            profitResult.innerHTML = `<span class="text-red-400">Введите корректные данные</span>`;
+            return;
+        }
+
+        const coinsBought = investment / price * (1 - buyFee/100);
+        const grossSell = coinsBought * targetPrice;
+        const sellFeeAmount = grossSell * (sellFee / 100);
+        const netProfit = grossSell - sellFeeAmount - investment;
+
+        const isProfit = netProfit > 0;
+        profitResult.className = `min-h-[52px] rounded-2xl p-4 text-center font-mono text-sm border ${isProfit ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-red-500/10 border-red-500/30 text-red-400'}`;
+        profitResult.innerHTML = isProfit 
+            ? `Прибыль: <span class="font-bold">+$${netProfit.toFixed(2)}</span>` 
+            : `Убыток: <span class="font-bold">-$${Math.abs(netProfit).toFixed(2)}</span>`;
+    });
+
+    let currentLiqPeriod = 24;
+    let currentLiqAsset = 'btc';
+
+    function updateLiquidationMap() {
+        const base = currentLiqAsset === 'btc' ? { long: 428, short: 312 } : { long: 215, short: 287 };
+        const mult = currentLiqPeriod === 48 ? 1.85 : 1;
+        
+        const long = Math.round(base.long * mult);
+        const short = Math.round(base.short * mult);
+        const total = long + short;
+
+        document.getElementById('liqLongValue').textContent = `$${long}M`;
+        document.getElementById('liqShortValue').textContent = `$${short}M`;
+        document.getElementById('liqLongPercent').textContent = `${(long/total*100).toFixed(1)}%`;
+        document.getElementById('liqShortPercent').textContent = `${(short/total*100).toFixed(1)}%`;
+    }
+
+    document.querySelectorAll('.period-switch, .asset-switch').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const parentGroup = btn.classList.contains('period-switch') ? '.period-switch' : '.asset-switch';
+            document.querySelectorAll(parentGroup).forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if (btn.dataset.liqPeriod) currentLiqPeriod = parseInt(btn.dataset.liqPeriod);
+            if (btn.dataset.liqAsset) currentLiqAsset = btn.dataset.liqAsset;
+            
+            updateLiquidationMap();
+            tg.HapticFeedback.impactOccurred('light');
+        });
+    });
+
+    // ==================== MEMPOOL ====================
+    async function fetchMempoolData() {
+        try {
+            const [feeRes, diffRes] = await Promise.all([
+                fetch('https://mempool.space/api/v1/fees/recommended'),
+                fetch('https://mempool.space/api/v1/difficulty-adjustment')
+            ]);
+
+            const fees = await feeRes.json();
+            const diff = await diffRes.json();
+
+            const btcPrice = ratesData.bitcoin?.usd || 65000;
+            const satToUsd = (btcPrice / 100000000) * 140;
+
+            document.getElementById('gasLowPriority').textContent = fees.halfHourFee;
+            document.getElementById('gasMedPriority').textContent = fees.hourFee;
+            document.getElementById('gasHighPriority').textContent = fees.fastestFee;
+            document.getElementById('gasNoPriority').textContent = fees.economyFee || fees.minimumFee || 12;
+
+            document.getElementById('gasLowPriorityFiat').textContent = '$' + (fees.halfHourFee * satToUsd).toFixed(2);
+            document.getElementById('gasMedPriorityFiat').textContent = '$' + (fees.hourFee * satToUsd).toFixed(2);
+            document.getElementById('gasHighPriorityFiat').textContent = '$' + (fees.fastestFee * satToUsd).toFixed(2);
+            document.getElementById('gasNoPriorityFiat').textContent = '$' + ((fees.economyFee || 12) * satToUsd).toFixed(2);
+
+            document.getElementById('mempoolUnconfirmed').innerHTML = `${diff.remainingBlocks || '?'} бл. до халвинга`;
+        } catch (e) {
+            console.warn('Mempool data unavailable');
+        }
+    }
+    
+    // ==================== GLOBAL METRICS (FIXED) ====================
+    async function fetchGlobalMetrics() {
+        // ETH Gas via CORS-friendly public RPCs with timeout fallback
+        const rpcEndpoints = [
+            'https://eth.llamarpc.com',
+            'https://rpc.ankr.com/eth',
+            'https://eth.drpc.org'
+        ];
+        let gasLoaded = false;
+        
+        for (const rpc of rpcEndpoints) {
             try {
-                // Используем надежный, CORS-дружественный публичный RPC
-                const rpcUrl = 'https://ethereum.publicnode.com';
-                const response = await fetch(rpcUrl, {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
+                
+                const res = await fetch(rpc, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_gasPrice', params: [], id: 1 })
+                    body: JSON.stringify({ jsonrpc: '2.0', method: 'eth_gasPrice', params: [], id: 1 }),
+                    signal: controller.signal
                 });
+                clearTimeout(timeoutId);
                 
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data && data.result) {
-                        const gwei = Math.round(parseInt(data.result, 16) / 1e9);
-                        const el = document.getElementById('ethGasDisplay');
-                        if (el) {
-                            el.textContent = `⛽ ${gwei} Gwei`;
-                            // Динамическая расцветка в зависимости от нагрузки сети
-                            if (gwei < 15) el.className = "text-emerald-400/90 font-mono";
-                            else if (gwei < 30) el.className = "text-amber-400/90 font-mono";
-                            else el.className = "text-red-400/90 font-mono";
-                        }
-                        gasLoaded = true;
-                    }
-                }
-            } catch (e) {
-                console.error('Ошибка запроса газа (RPC):', e);
-            }
-
-            // Fallback API, если основной RPC недоступен или блокирует CORS
-            if (!gasLoaded) {
-                try {
-                    const res = await fetch('https://ethgas.watch/api/gas');
+                if (res.ok) {
                     const data = await res.json();
-                    if (data && data.standard) {
-                        const gwei = Math.round(data.standard);
-                        const el = document.getElementById('ethGasDisplay');
-                        if (el) {
-                            el.textContent = `⛽ ${gwei} Gwei`;
-                            if (gwei < 15) el.className = "text-emerald-400/90 font-mono";
-                            else if (gwei < 30) el.className = "text-amber-400/90 font-mono";
-                            else el.className = "text-red-400/90 font-mono";
-                        }
+                    if (data?.result) {
+                        const gwei = Math.round(parseInt(data.result, 16) / 1e9);
+                        document.getElementById('ethGasDisplay').textContent = `⛽ ${gwei} Gwei`;
                         gasLoaded = true;
+                        break;
                     }
-                } catch (e) {
-                    console.error('Ошибка запроса газа (Fallback API):', e);
                 }
-            }
-
-            if (!gasLoaded) {
-                const el = document.getElementById('ethGasDisplay');
-                if (el) {
-                    el.textContent = `⛽ -- Gwei`;
-                    el.className = "text-gray-500/90 font-mono";
-                }
-            }
-
-            // 2. Fetch Fear & Greed Index
-            try {
-                const fngResponse = await fetch('https://api.alternative.me/fng/?limit=1');
-                const fngData = await fngResponse.json();
-                
-                if (fngData && fngData.data && fngData.data[0]) {
-                    const val = parseInt(fngData.data[0].value);
-                    const classification = fngData.data[0].value_classification;
-                    const el = document.getElementById('fngDisplay');
-                    
-                    if (el) {
-                        el.textContent = `⚖️ F&G: ${val} (${classification})`;
-                        
-                        // Динамическая расцветка индекса
-                        if (val <= 25) el.className = "text-red-400/90 font-mono"; // Extreme Fear
-                        else if (val <= 45) el.className = "text-orange-400/90 font-mono"; // Fear
-                        else if (val <= 55) el.className = "text-yellow-400/90 font-mono"; // Neutral
-                        else if (val <= 75) el.className = "text-emerald-400/90 font-mono"; // Greed
-                        else el.className = "text-green-400/90 font-mono"; // Extreme Greed
-                    }
-                } else {
-                    throw new Error('Неверная структура ответа F&G');
-                }
-            } catch (e) {
-                console.error('Ошибка получения индекса Fear & Greed:', e);
-                const el = document.getElementById('fngDisplay');
-                if (el) {
-                    el.textContent = `⚖️ F&G: --`;
-                    el.className = "text-gray-500/90 font-mono";
-                }
-            }
+            } catch (e) { /* continue to next RPC */ }
         }
-        
-        // ==================== INIT ====================
-        function init() {
-            syncSelectOptions();
-            fetchRates();
-            fetchMempoolData();
-            fetchGlobalMetrics(); 
-            
-            setInterval(fetchRates, CACHE_TTL);
-            setInterval(fetchMempoolData, 90000);
-            setInterval(fetchGlobalMetrics, 120000); 
 
-            setTimeout(() => {
-                topInput.value = "1";
+        if (!gasLoaded) {
+            document.getElementById('ethGasDisplay').textContent = `⛽ NetErr`;
+        }
+
+        // Fear & Greed Index via proxy fallback
+        try {
+            const fngData = await fetchWithFallback('https://api.alternative.me/fng/?limit=1');
+            if (fngData?.data?.[0]) {
+                const val = fngData.data[0].value;
+                document.getElementById('fngDisplay').textContent = `⚖️ F&G: ${val}`;
+            } else {
+                throw new Error('Invalid F&G structure');
+            }
+        } catch (e) {
+            console.error('F&G fetch error:', e);
+            document.getElementById('fngDisplay').textContent = `⚖️ F&G: --`;
+        }
+    }
+	
+    // ==================== INIT ====================
+    function init() {
+        syncSelectOptions();
+        fetchRates();
+        fetchMempoolData();
+        fetchGlobalMetrics(); 
+		
+        setInterval(fetchRates, CACHE_TTL);
+        setInterval(fetchMempoolData, 90000);
+        setInterval(fetchGlobalMetrics, 120000); 
+
+        setTimeout(() => {
+            topInput.value = "1";
+            currentActiveInput = topInput;
+            updateCalculator();
+        }, 300);
+
+        pinsContainer.addEventListener('click', (e) => {
+            if (e.target.closest('.delete-pin-btn')) return;
+            const card = e.target.closest('.pin-card');
+            if (card) {
+                const id = card.dataset.id;
+                tg.HapticFeedback.impactOccurred('light');
+                topSelect.value = id;
                 currentActiveInput = topInput;
+                topInputBox.classList.add('active-input-box');
+                bottomInputBox.classList.remove('active-input-box');
                 updateCalculator();
-            }, 300);
+            }
+        });
+    }
 
-            pinsContainer.addEventListener('click', (e) => {
-                if (e.target.closest('.delete-pin-btn')) return;
-                const card = e.target.closest('.pin-card');
-                if (card) {
-                    const id = card.dataset.id;
-                    tg.HapticFeedback.impactOccurred('light');
-                    topSelect.value = id;
-                    currentActiveInput = topInput;
-                    topInputBox.classList.add('active-input-box');
-                    bottomInputBox.classList.remove('active-input-box');
-                    updateCalculator();
-                }
-            });
-        }
-
-        init();	
+    init();	
     </script>
 </body>
 </html>
