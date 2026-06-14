@@ -81,7 +81,7 @@
       <span class="status-badge text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-mono">кэш</span>
     </div>
     <div class="flex justify-between items-center px-1">
-      <span class="text-[11px] font-bold uppercase tracking-wider tg-hint">Активы</span>
+      <span class="text-[11px] font-bold uppercase tracking-wider tg-hint">Избранные активы</span>
       <div class="flex items-center space-x-1.5 text-[10px] font-mono font-medium">
         <span id="ethGasDisplay" class="text-purple-400/90">⛽ -- Gwei</span>
         <span class="text-zinc-600">|</span>
@@ -236,7 +236,7 @@
     <button id="calcProfitActionBtn" class="tg-primary-btn w-full py-4 rounded-3xl font-bold text-base shadow-lg active:scale-[0.97] transition-transform">Рассчитать прибыль</button>
     <div id="profitResult" class="min-h-[52px] rounded-2xl p-4 text-center font-mono text-sm flex items-center justify-center border border-transparent"></div>
 
-    <div class="tg-secondary-bg p-5 rounded-3xl border border-gray-700/30">
+    <div class="bg-zinc-900/60 p-5 rounded-3xl border border-gray-800">
       <div class="flex justify-between items-center mb-6">
         <div class="flex items-center gap-2">
           <div class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></div>
@@ -261,15 +261,6 @@
           
           <path d="M 30 100 A 70 70 0 0 1 170 100" fill="none" stroke="url(#fgGradient)" stroke-width="12" stroke-linecap="round"/>
           
-          <line x1="30" y1="100" x2="20" y2="100" stroke="#71717a" stroke-width="2" stroke-linecap="round"/>
-          <text x="10" y="103" text-anchor="middle" fill="#71717a" font-size="10" font-weight="700">0</text>
-          
-          <line x1="100" y1="30" x2="100" y2="20" stroke="#71717a" stroke-width="2" stroke-linecap="round"/>
-          <text x="100" y="14" text-anchor="middle" fill="#71717a" font-size="10" font-weight="700">50</text>
-          
-          <line x1="170" y1="100" x2="180" y2="100" stroke="#71717a" stroke-width="2" stroke-linecap="round"/>
-          <text x="190" y="103" text-anchor="middle" fill="#71717a" font-size="10" font-weight="700">100</text>
-
           <g id="fgNeedle" transform="rotate(-90 100 100)">
             <line x1="100" y1="100" x2="100" y2="40" stroke="#f4f4f5" stroke-width="3" stroke-linecap="round"/>
             <polygon points="100,33 95,45 105,45" fill="#f4f4f5"/>
