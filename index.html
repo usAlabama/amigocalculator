@@ -23,9 +23,18 @@
   input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
   input[type=number] { -moz-appearance: textfield; }
   .pin-card {
-    transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
-    touch-action: none;
-    user-select: none;
+      transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease;
+      touch-action: pan-x pan-y;
+      user-select: none;
+  }
+
+  .pin-card.drag-hold {
+      animation: pulse-drag 0.6s ease infinite alternate;
+  }
+
+  @keyframes pulse-drag {
+      from { box-shadow: 0 0 0 0 rgba(36, 129, 204, 0.4); }
+      to   { box-shadow: 0 0 0 6px rgba(36, 129, 204, 0.15); }
   }
   .pin-card.dragging { opacity: 0.5; transform: scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
   .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -532,82 +541,126 @@ function renderPins() {
   });
 }
 
-/* ==================== POINTER-BASED DRAG & DROP (mobile-safe) ==================== */
+/* ==================== POINTER-BASED DRAG & DROP (long-press mobile-safe) ==================== */
 let dragState = null;
 const DRAG_THRESHOLD = 8;
+const LONG_PRESS_MS = 350;
 
 function getDragAfterElement(container, x) {
-  const els = [...container.querySelectorAll('.pin-card:not(.dragging)')];
-  return els.reduce((closest, child) => {
-    const box = child.getBoundingClientRect();
-    const offset = x - box.left - box.width / 2;
-    if (offset < 0 && offset > closest.offset) return { offset, element: child };
-    return closest;
-  }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+    const els = [...container.querySelectorAll('.pin-card:not(.dragging)')];
+    return els.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = x - box.left - box.width / 2;
+        if (offset < 0 && offset > closest.offset) return { offset, element: child };
+        return closest;
+    }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
 }
 
 function selectCoinFromPin(id) {
-  haptic.impact('light');
-  topSelect.value = id;
-  currentActiveInput = topInput;
-  topInputBox.classList.add('active-input-box');
-  bottomInputBox.classList.remove('active-input-box');
-  updateCalculator();
+    haptic.impact('light');
+    topSelect.value = id;
+    currentActiveInput = topInput;
+    topInputBox.classList.add('active-input-box');
+    bottomInputBox.classList.remove('active-input-box');
+    updateCalculator();
 }
 
 function deletePin(id) {
-  if (pinnedCoins.length <= 2) { haptic.notify('error'); return; }
-  pinnedCoins = pinnedCoins.filter((x) => x !== id);
-  delete coinsMeta[id];
-  persistMeta();
-  renderPins();
-  updateMarquee();
-  syncSelectOptions();
-  updateCalculator();
-  haptic.notify('warning');
+    if (pinnedCoins.length <= 2) { haptic.notify('error'); return; }
+    pinnedCoins = pinnedCoins.filter((x) => x !== id);
+    delete coinsMeta[id];
+    persistMeta();
+    renderPins();
+    updateMarquee();
+    syncSelectOptions();
+    updateCalculator();
+    haptic.notify('warning');
+}
+
+function cancelDrag() {
+    if (!dragState) return;
+    clearTimeout(dragState.longPressTimer);
+    dragState.card.classList.remove('dragging', 'drag-hold');
+    try { dragState.card.releasePointerCapture(dragState.pointerId); } catch (err) {}
+    dragState = null;
 }
 
 pinsContainer.addEventListener('pointerdown', (e) => {
-  const delBtn = e.target.closest('.delete-pin-btn');
-  if (delBtn) { e.preventDefault(); e.stopPropagation(); deletePin(delBtn.dataset.id); return; }
-  const card = e.target.closest('.pin-card');
-  if (!card) return;
-  dragState = { card, startX: e.clientX, startY: e.clientY, moved: false, pointerId: e.pointerId };
+    const delBtn = e.target.closest('.delete-pin-btn');
+    if (delBtn) { e.preventDefault(); e.stopPropagation(); deletePin(delBtn.dataset.id); return; }
+    const card = e.target.closest('.pin-card');
+    if (!card) return;
+
+    dragState = {
+        card,
+        startX: e.clientX,
+        startY: e.clientY,
+        moved: false,
+        pointerId: e.pointerId,
+        activated: false,
+        longPressTimer: setTimeout(() => {
+            if (!dragState || dragState.moved) return;
+            // Long-press сработал — активируем режим перетаскивания
+            dragState.activated = true;
+            dragState.card.classList.add('dragging', 'drag-hold');
+            try { dragState.card.setPointerCapture(dragState.pointerId); } catch (err) {}
+            haptic.select();
+        }, LONG_PRESS_MS)
+    };
 });
 
 pinsContainer.addEventListener('pointermove', (e) => {
-  if (!dragState) return;
-  const dx = e.clientX - dragState.startX;
-  const dy = e.clientY - dragState.startY;
-  if (!dragState.moved && Math.hypot(dx, dy) > DRAG_THRESHOLD) {
-    dragState.moved = true;
-    dragState.card.classList.add('dragging');
-    try { dragState.card.setPointerCapture(dragState.pointerId); } catch (err) {}
-    haptic.select();
-  }
-  if (dragState.moved) {
-    e.preventDefault();
-    const after = getDragAfterElement(pinsContainer, e.clientX);
-    if (after == null) pinsContainer.appendChild(dragState.card);
-    else if (after !== dragState.card) pinsContainer.insertBefore(dragState.card, after);
-  }
+    if (!dragState) return;
+    const dx = e.clientX - dragState.startX;
+    const dy = e.clientY - dragState.startY;
+    const dist = Math.hypot(dx, dy);
+
+    // Если палец двинулся ДО long-press — это скролл, отменяем drag
+    if (!dragState.activated && dist > DRAG_THRESHOLD) {
+        cancelDrag();
+        return;
+    }
+
+    // Long-press сработал — перетаскиваем
+    if (dragState.activated) {
+        e.preventDefault();
+        e.stopPropagation();
+        dragState.moved = true;
+        dragState.card.classList.remove('drag-hold');
+        const after = getDragAfterElement(pinsContainer, e.clientX);
+        if (after == null) pinsContainer.appendChild(dragState.card);
+        else if (after !== dragState.card) pinsContainer.insertBefore(dragState.card, after);
+    }
 });
 
+// Блокируем нативный скролл во время активного drag
+pinsContainer.addEventListener('touchmove', (e) => {
+    if (dragState && dragState.activated) {
+        e.preventDefault();
+    }
+}, { passive: false });
+
 function endDrag() {
-  if (!dragState) return;
-  const { card, moved } = dragState;
-  card.classList.remove('dragging');
-  if (moved) {
-    pinnedCoins = [...pinsContainer.children].map((el) => el.dataset.id);
-    persistMeta();
-    syncSelectOptions();
-  } else {
-    selectCoinFromPin(card.dataset.id);
-  }
-  dragState = null;
+    if (!dragState) return;
+    clearTimeout(dragState.longPressTimer);
+    const { card, moved, activated } = dragState;
+    card.classList.remove('dragging', 'drag-hold');
+    try { card.releasePointerCapture(dragState.pointerId); } catch (err) {}
+
+    if (moved) {
+        pinnedCoins = [...pinsContainer.children].map((el) => el.dataset.id);
+        persistMeta();
+        syncSelectOptions();
+    } else if (!activated) {
+        // Короткий тап (без long-press) — выбираем монету
+        selectCoinFromPin(card.dataset.id);
+    }
+    dragState = null;
 }
+
 pinsContainer.addEventListener('pointerup', endDrag);
 pinsContainer.addEventListener('pointercancel', endDrag);
+pinsContainer.addEventListener('pointerleave', cancelDrag);
 
 /* ==================== NETWORK ==================== */
 async function fetchJSON(url, timeoutMs = 6000, options) {
@@ -1154,3 +1207,4 @@ init();
 </script>
 </body>
 </html>
+
