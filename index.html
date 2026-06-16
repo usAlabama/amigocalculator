@@ -36,7 +36,12 @@
       from { box-shadow: 0 0 0 0 rgba(36, 129, 204, 0.4); }
       to   { box-shadow: 0 0 0 6px rgba(36, 129, 204, 0.15); }
   }
-  .pin-card.dragging { opacity: 0.5; transform: scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+  .pin-card.dragging { 
+      opacity: 0.5; 
+      transform: scale(1.05); 
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5); 
+      touch-action: none; /* Блокируем нативные жесты во время активного drag */
+  }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   .active-input-box {
@@ -582,6 +587,7 @@ function cancelDrag() {
     clearTimeout(dragState.longPressTimer);
     dragState.card.classList.remove('dragging', 'drag-hold');
     try { dragState.card.releasePointerCapture(dragState.pointerId); } catch (err) {}
+    pinsContainer.style.overflow = ''; // Возвращаем скролл
     dragState = null;
 }
 
@@ -590,6 +596,10 @@ pinsContainer.addEventListener('pointerdown', (e) => {
     if (delBtn) { e.preventDefault(); e.stopPropagation(); deletePin(delBtn.dataset.id); return; }
     const card = e.target.closest('.pin-card');
     if (!card) return;
+
+    // КРИТИЧНО: захватываем pointer СИНХРОННО в pointerdown!
+    // На мобильных вызов через setTimeout уже не сработает — браузер отпустит pointer.
+    try { card.setPointerCapture(e.pointerId); } catch (err) {}
 
     dragState = {
         card,
@@ -600,10 +610,9 @@ pinsContainer.addEventListener('pointerdown', (e) => {
         activated: false,
         longPressTimer: setTimeout(() => {
             if (!dragState || dragState.moved) return;
-            // Long-press сработал — активируем режим перетаскивания
             dragState.activated = true;
             dragState.card.classList.add('dragging', 'drag-hold');
-            try { dragState.card.setPointerCapture(dragState.pointerId); } catch (err) {}
+            pinsContainer.style.overflow = 'hidden'; // Блокируем скролл контейнера
             haptic.select();
         }, LONG_PRESS_MS)
     };
@@ -646,13 +655,13 @@ function endDrag() {
     const { card, moved, activated } = dragState;
     card.classList.remove('dragging', 'drag-hold');
     try { card.releasePointerCapture(dragState.pointerId); } catch (err) {}
+    pinsContainer.style.overflow = ''; // Возвращаем скролл
 
     if (moved) {
         pinnedCoins = [...pinsContainer.children].map((el) => el.dataset.id);
         persistMeta();
         syncSelectOptions();
     } else if (!activated) {
-        // Короткий тап (без long-press) — выбираем монету
         selectCoinFromPin(card.dataset.id);
     }
     dragState = null;
